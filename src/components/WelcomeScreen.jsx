@@ -14,7 +14,7 @@ const WelcomeScreen = ({ onFileUpload }) => {
         </p>
         <p className="text-gray-600 mt-2 mb-10 text-sm">
         <br/>
-        Upload your Rekordbox or Serato XML file to get started.
+        Upload your Rekordbox XML file to get started.
       </p>
       <div className="max-w-xl mx-auto">
         <FileUpload onFileUpload={onFileUpload} />
@@ -23,10 +23,10 @@ const WelcomeScreen = ({ onFileUpload }) => {
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">How It Works:</h2>
         <div className="text-left space-y-4 text-gray-600 text-sm">
             <p>
-            <strong className="text-gray-600">1. Export Your Library:</strong> Export your library as an XML from Rekordbox or Serato. (File → Export Collection in XML Format)
+            <strong className="text-gray-600">1. Export Your Library:</strong> Export your library as an XML from Rekordbox. (File → Export Collection in XML Format)
           </p>
           <p>
-            <strong className="text-gray-600">2. Upload Your Library:</strong> Click the button below to upload your playlist or collection file from Rekordbox or Serato (as a `.xml` file).
+            <strong className="text-gray-600">2. Upload Your Library:</strong> Click "Choose File" and select your exported XML file to upload your playlist or collection from Rekordbox (as a `.xml` file).
           </p>
           <p>
             <strong className="text-gray-600">3. Find Compatible Tracks:</strong> Click on any song to see a list of harmonically compatible tracks based on BPM and Camelot key.
