@@ -109,7 +109,7 @@ function App() {
   }, [searchTerm, selectedSong, allSongs, filterParams]);
 
  return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto max-w-6xl">
         {allSongs.length === 0 ? (
           <div className="p-4 md:p-8">
@@ -117,45 +117,92 @@ function App() {
           </div>
         ) : (
           <div className="p-0 md:p-8">
-            <header className="text-center mb-8 px-4 pt-8 md:px-0 md:pt-0">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-800">📀 DECKHAND 📀</h1>
+            <header className="text-center mb-4 md:mb-8 px-4 pt-8 md:px-0 md:pt-0">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-800">📀 DECKHAND</h1>
               <p className="text-gray-600">Harmonic Mixing & Playlist Builder</p>
             </header>
-            
-            {/* Main layout now uses flexbox for reordering */}
-            <div className="flex flex-col md:flex-row md:gap-8">
-              
-              {/* ## Right Column (Now appears FIRST on mobile) ## */}
-              <div className="w-full md:w-1/2 order-1 md:order-2">
-                {/* This container is sticky on ALL screen sizes */}
-                <div className="sticky top-0 z-10 bg-gray-50 px-4 pt-4 md:px-0 md:pt-0 md:top-4 md:bg-transparent">
-                  <div className="md:space-y-6">
-                    {selectedSong && (
-                      <>
-                        <SelectedSongDisplay
-                          song={selectedSong}
-                          onClear={clearSelection}
-                          onAddToPlaylist={addToPlaylist}
-                        />
-                        <FilterControls
-                          filterParams={filterParams}
-                          onFilterChange={setFilterParams}
-                          selectedSong={selectedSong}
-                        />
-                      </>
-                    )}
-                    <CurrentPlaylist
-                      playlist={currentPlaylist}
-                      onSave={saveCurrentPlaylist}
-                      onRemove={removeFromPlaylist}
-                      onSelect={handleSongSelect}
-                      onDragEnd={handlePlaylistDragEnd}
-                    />
-                  </div>
+
+            {/* ====================================================================== */}
+            {/* ## MOBILE-ONLY LAYOUT (Visible on screens smaller than 'md') ## */}
+            {/* ====================================================================== */}
+            <div className="md:hidden flex flex-col h-[calc(100vh-120px)]"> {/* Fills the remaining screen height */}
+              <Instructions />
+              {/* Top Panel (Playlist & Controls) - NOT SCROLLABLE */}
+              <div className="flex-shrink-0 bg-white p-4 border-b-2 border-black-300 shadow-lg">
+                {selectedSong && (
+                  <SelectedSongDisplay
+                    song={selectedSong}
+                    onClear={clearSelection}
+                    onAddToPlaylist={addToPlaylist}
+                  />
+                )}
+                <CurrentPlaylist
+                  playlist={currentPlaylist}
+                  onSave={saveCurrentPlaylist}
+                  onRemove={removeFromPlaylist}
+                  onSelect={handleSongSelect}
+                  onDragEnd={handlePlaylistDragEnd}
+                />
+              </div>
+
+              {/* Bottom Panel (Song List) - SCROLLABLE */}
+              <div className="flex-grow overflow-y-auto p-4">
+                <SearchBar onSearch={setSearchTerm} />
+                <h2 className="text-xl font-semibold my-4 border-b pb-2">
+                  {selectedSong ? 'Compatible Tracks' : 'Your Library'}
+                </h2>
+                <SongList
+                  songs={displaySongs}
+                  onSongSelect={handleSongSelect}
+                  onAddToPlaylist={addToPlaylist}
+                />
+              </div>
+            </div>
+
+            {/* =================================================================== */}
+            {/* ## DESKTOP-ONLY LAYOUT (Visible on 'md' screens and up) ## */}
+            {/* =================================================================== */}
+            <div className="hidden md:grid md:grid-cols-2 md:gap-8">
+              {/* Left Column */}
+              <div className="overflow-visible">
+                <Instructions />
+                <SearchBar onSearch={setSearchTerm} />
+                <h2 className="text-2xl font-semibold my-4 border-b pb-2">
+                  {selectedSong ? 'Compatible Tracks' : 'Your Library'}
+                </h2>
+                <SongList
+                  songs={displaySongs}
+                  onSongSelect={handleSongSelect}
+                  onAddToPlaylist={addToPlaylist}
+                />
+              </div>
+
+              {/* Right Column */}
+              <div className="overflow-visible">
+                <div className="sticky top-4 space-y-6">
+                  {selectedSong && (
+                    <>
+                      <SelectedSongDisplay
+                        song={selectedSong}
+                        onClear={clearSelection}
+                        onAddToPlaylist={addToPlaylist}
+                      />
+                      <FilterControls
+                        filterParams={filterParams}
+                        onFilterChange={setFilterParams}
+                        selectedSong={selectedSong}
+                      />
+                    </>
+                  )}
+                  <CurrentPlaylist
+                    playlist={currentPlaylist}
+                    onSave={saveCurrentPlaylist}
+                    onRemove={removeFromPlaylist}
+                    onSelect={handleSongSelect}
+                    onDragEnd={handlePlaylistDragEnd}
+                  />
                 </div>
-                
-                {/* SavedPlaylists scrolls normally underneath */}
-                <div className="mt-6 px-4 md:px-0">
+                <div className="mt-6">
                   <SavedPlaylists
                     savedPlaylists={savedPlaylists}
                     onLoad={loadPlaylist}
@@ -163,24 +210,8 @@ function App() {
                   />
                 </div>
               </div>
-
-              {/* ## Left Column (Now appears SECOND on mobile) ## */}
-              <div className="w-full md:w-1/2 order-2 md:order-1 px-4 md:px-0">
-                <div className="mt-8 md:mt-0">
-                  <Instructions />
-                  <SearchBar onSearch={setSearchTerm} />
-                  <h2 className="text-2xl font-semibold my-4 border-b pb-2">
-                    {selectedSong ? 'Compatible Tracks' : 'Your Library'}
-                  </h2>
-                  <SongList
-                    songs={displaySongs}
-                    onSongSelect={handleSongSelect}
-                    onAddToPlaylist={addToPlaylist}
-                  />
-                </div>
-              </div>
-
             </div>
+
           </div>
         )}
       </div>

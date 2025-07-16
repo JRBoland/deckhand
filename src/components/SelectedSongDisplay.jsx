@@ -7,13 +7,13 @@ const SelectedSongDisplay = ({ song, onClear, onAddToPlaylist }) => {
   };
 
   return (
-    <div className="relative p-4 mb-6 bg-indigo-600 text-white rounded-lg shadow-lg">
+    <div className="relative p-4 mb-6 bg-slate-600 text-white rounded-lg shadow-lg">
       <p className="font-bold text-sm">FILTERING BY:</p>
       <div className="flex justify-between items-start">
         <div>
           <h2 className="font-bold text-xl">{song.name}</h2>
           <p>{song.artist}</p>
-          <p className="mt-1 text-indigo-200">
+          <p className="mt-1 text-slate-200">
             BPM: {song.bpm} | Key: {song.key}
           </p>
         </div>
@@ -26,7 +26,7 @@ const SelectedSongDisplay = ({ song, onClear, onAddToPlaylist }) => {
       </div>
       <button
         onClick={onClear}
-        className="absolute top-2 right-2 text-white bg-indigo-500 hover:bg-indigo-400 rounded-full h-8 w-8 flex items-center justify-center font-bold"
+        className="absolute top-2 right-2 text-white bg-slate-500 hover:bg-slate-400 rounded-full h-8 w-8 flex items-center justify-center font-bold"
         aria-label="Clear selection"
       >
         &times;

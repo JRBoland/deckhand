@@ -7,9 +7,9 @@ const WelcomeScreen = ({ onFileUpload }) => {
     <div className="text-center p-4 sm:p-8">
       
       <h1 className="text-4xl font-bold text-gray-800">
-        📀 DECKHAND 📀
+        📀 DECKHAND
       </h1>
-      <p className="text-gray-600 mt-2">
+      <p className="text-gray-600">
         Plan your set.
         </p>
         <p className="text-gray-600 mt-2 mb-10 text-sm">

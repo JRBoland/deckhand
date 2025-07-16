@@ -5,7 +5,6 @@ const SongList = ({ songs, onSongSelect, onAddToPlaylist }) => { // Add onAddToP
   if (songs.length === 0) {
     return <p className="text-center text-gray-500">No songs to display.</p>;
   }
-
    return (
     <div className="space-y-3">
       {songs.map((song) => (
@@ -29,7 +28,7 @@ const SongList = ({ songs, onSongSelect, onAddToPlaylist }) => { // Add onAddToP
           {/* "Add" button with mobile margin */}
           <button
             onClick={() => onAddToPlaylist(song)}
-            className="mt-4 sm:mt-0 sm:ml-4 px-4 py-2 w-full sm:w-auto text-sm font-semibold text-white bg-green-500 rounded-lg shadow-sm hover:bg-green-600"
+            className="mt-4 sm:mt-0 sm:ml-4 px-4 py-2 w-full sm:w-auto text-sm font-semibold text-white bg-emerald-500 rounded-lg shadow-sm hover:bg-green-600"
           >
             Add
           </button>
