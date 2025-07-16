@@ -115,7 +115,7 @@ function App() {
   }, [searchTerm, selectedSong, allSongs, filterParams]);
 
  return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F9FAFB]">
       <div className="container mx-auto max-w-6xl">
         {allSongs.length === 0 ? (
           <div className="p-4 md:p-8">
@@ -124,7 +124,7 @@ function App() {
         ) : (
           <div className="p-0 md:p-8">
             <header className="text-center mb-4 md:mb-8 px-4 pt-4 md:px-0 md:pt-0">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-800">📀 DECKHAND</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-800">📀 DECKHAND </h1>
               <p className="text-gray-600">Harmonic Mixing & Playlist Builder</p>
             </header>
 

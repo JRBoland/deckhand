@@ -10,7 +10,7 @@ const WelcomeScreen = ({ onFileUpload }) => {
         📀 DECKHAND
       </h1>
       <p className="text-gray-600">
-        Plan your set.
+        Your silent partner in the mix.
         </p>
         <p className="text-gray-600 mt-2 mb-10 text-sm">
         <br/>
@@ -23,7 +23,7 @@ const WelcomeScreen = ({ onFileUpload }) => {
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">How It Works:</h2>
         <div className="text-left space-y-4 text-gray-600 text-sm">
             <p>
-            <strong className="text-gray-600">1. Export Your Library:</strong> Export your library as an XML from Rekordbox. (File → Export Collection in XML Format)
+            <strong className="text-gray-600">1. Export Your Library:</strong> Export your library as an XML from Rekordbox. (File → Export Collection in XML Format).
           </p>
           <p>
             <strong className="text-gray-600">2. Upload Your Library:</strong> Click "Choose File" and select your exported XML file to upload your playlist or collection from Rekordbox (as a `.xml` file).
