@@ -11,7 +11,7 @@ const SelectedSongDisplay = ({ song, onClear, onAddToPlaylist }) => {
       <p className="font-bold text-sm">FILTERING BY:</p>
       <div className="flex justify-between items-start">
         <div>
-          <h2 className="font-bold text-xl">{song.name}</h2>
+          <h2 className="font-bold text-lg">{song.name}</h2>
           <p>{song.artist}</p>
           <p className="mt-1 text-slate-200">
             BPM: {song.bpm} | Key: {song.key}

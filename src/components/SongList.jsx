@@ -14,11 +14,11 @@ const SongList = ({ songs, onSongSelect, onAddToPlaylist }) => { // Add onAddToP
         >
           {/* Main info section */}
           <div
-            className="flex-grow cursor-pointer"
+            className="flex-grow cursor-pointer  min-w-0"
             onClick={() => onSongSelect(song)}
           >
-            <p className="font-bold text-lg text-gray-800">{song.name}</p>
-            <p className="text-gray-600">{song.artist}</p>
+            <p className="font-bold text-lg text-gray-800 truncate">{song.name}</p>
+            <p className="text-gray-600 truncate">{song.artist}</p>
             {/* Details (BPM/Key) now stack on mobile */}
             <div className="flex gap-4 mt-2 sm:mt-1">
               <p className="font-semibold text-sm text-indigo-600">BPM: {song.bpm}</p>
@@ -28,7 +28,7 @@ const SongList = ({ songs, onSongSelect, onAddToPlaylist }) => { // Add onAddToP
           {/* "Add" button with mobile margin */}
           <button
             onClick={() => onAddToPlaylist(song)}
-            className="mt-4 sm:mt-0 sm:ml-4 px-4 py-2 w-full sm:w-auto text-sm font-semibold text-white bg-emerald-500 rounded-lg shadow-sm hover:bg-green-600"
+            className="mt-4 sm:mt-0 sm:ml-4 px-4 py-2 w-full sm:w-auto text-sm font-semibold text-white bg-emerald-500 rounded-lg shadow-sm hover:bg-emerald-600 flex-shrink-0"
           >
             Add
           </button>

@@ -34,7 +34,13 @@ function App() {
   const handleFileUpload = (songs) => setAllSongs(songs);
   const handleSongSelect = (song) => setSelectedSong(song);
   const clearSelection = () => setSelectedSong(null);
-  const addToPlaylist = (song) => setCurrentPlaylist([...currentPlaylist, song]);
+  const addToPlaylist = (song) => {
+  // First, add the song to the playlist
+  setCurrentPlaylist((prevPlaylist) => [...prevPlaylist, song]);
+  
+  // Then, set that same song as the new selected song
+  setSelectedSong(song);
+};
 
   const saveCurrentPlaylist = () => {
     const playlistName = prompt("Enter a name for this playlist:", `My Setlist ${savedPlaylists.length + 1}`);
@@ -117,7 +123,7 @@ function App() {
           </div>
         ) : (
           <div className="p-0 md:p-8">
-            <header className="text-center mb-4 md:mb-8 px-4 pt-8 md:px-0 md:pt-0">
+            <header className="text-center mb-4 md:mb-8 px-4 pt-4 md:px-0 md:pt-0">
               <h1 className="text-3xl md:text-4xl font-bold text-gray-800">📀 DECKHAND</h1>
               <p className="text-gray-600">Harmonic Mixing & Playlist Builder</p>
             </header>
@@ -128,7 +134,7 @@ function App() {
             <div className="md:hidden flex flex-col h-[calc(100vh-120px)]"> {/* Fills the remaining screen height */}
               <Instructions />
               {/* Top Panel (Playlist & Controls) - NOT SCROLLABLE */}
-              <div className="flex-shrink-0 bg-white p-4 border-b-2 border-black-300 shadow-lg">
+              <div className="flex-shrink-0 bg-white p-4 border-b border-black-300 shadow-lg">
                 {selectedSong && (
                   <SelectedSongDisplay
                     song={selectedSong}
@@ -151,6 +157,13 @@ function App() {
                 <h2 className="text-xl font-semibold my-4 border-b pb-2">
                   {selectedSong ? 'Compatible Tracks' : 'Your Library'}
                 </h2>
+                <div className="mt-6">
+                  <SavedPlaylists
+                    savedPlaylists={savedPlaylists}
+                    onLoad={loadPlaylist}
+                    onDelete={deletePlaylist}
+                  />
+                </div>
                 <SongList
                   songs={displaySongs}
                   onSongSelect={handleSongSelect}
@@ -176,6 +189,7 @@ function App() {
                   onAddToPlaylist={addToPlaylist}
                 />
               </div>
+              
 
               {/* Right Column */}
               <div className="overflow-visible">
@@ -201,13 +215,14 @@ function App() {
                     onSelect={handleSongSelect}
                     onDragEnd={handlePlaylistDragEnd}
                   />
-                </div>
+                
                 <div className="mt-6">
                   <SavedPlaylists
                     savedPlaylists={savedPlaylists}
                     onLoad={loadPlaylist}
                     onDelete={deletePlaylist}
                   />
+                </div>
                 </div>
               </div>
             </div>
