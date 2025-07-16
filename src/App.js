@@ -108,77 +108,80 @@ function App() {
     setDisplaySongs(songsToShow);
   }, [searchTerm, selectedSong, allSongs, filterParams]);
 
-  return (
+ return (
     <div className="min-h-screen bg-white">
-      <div className="container mx-auto p-4 md:p-8 max-w-6xl">
+      <div className="container mx-auto max-w-6xl">
         {allSongs.length === 0 ? (
-          // If no songs are loaded, show the Welcome Screen
-          <WelcomeScreen onFileUpload={handleFileUpload} />
+          <div className="p-4 md:p-8">
+            <WelcomeScreen onFileUpload={handleFileUpload} />
+          </div>
         ) : (
-          // Otherwise, show the main application interface
-          <>
-            <header className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-gray-800">📀 DECKHAND 📀</h1>
+          <div className="p-0 md:p-8">
+            <header className="text-center mb-8 px-4 pt-8 md:px-0 md:pt-0">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-800">📀 DECKHAND 📀</h1>
               <p className="text-gray-600">Harmonic Mixing & Playlist Builder</p>
             </header>
-
-          <Instructions />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-8">
-              {/* ## Left Column (Library & Search) ## */}
-              <div>
-                {/* SearchBar is now always visible */}
-                <SearchBar onSearch={setSearchTerm} />
-                <h2 className="text-2xl font-semibold my-4 border-b pb-2">
-                  {selectedSong ? 'Compatible Tracks' : 'Your Library'}
-                </h2>
-                <SongList
-                  songs={displaySongs}
-                  onSongSelect={handleSongSelect}
-                  onAddToPlaylist={addToPlaylist}
-                />
+            
+            {/* Main layout now uses flexbox for reordering */}
+            <div className="flex flex-col md:flex-row md:gap-8">
+              
+              {/* ## Right Column (Now appears FIRST on mobile) ## */}
+              <div className="w-full md:w-1/2 order-1 md:order-2">
+                {/* This container is sticky on ALL screen sizes */}
+                <div className="sticky top-0 z-10 bg-gray-50 px-4 pt-4 md:px-0 md:pt-0 md:top-4 md:bg-transparent">
+                  <div className="md:space-y-6">
+                    {selectedSong && (
+                      <>
+                        <SelectedSongDisplay
+                          song={selectedSong}
+                          onClear={clearSelection}
+                          onAddToPlaylist={addToPlaylist}
+                        />
+                        <FilterControls
+                          filterParams={filterParams}
+                          onFilterChange={setFilterParams}
+                          selectedSong={selectedSong}
+                        />
+                      </>
+                    )}
+                    <CurrentPlaylist
+                      playlist={currentPlaylist}
+                      onSave={saveCurrentPlaylist}
+                      onRemove={removeFromPlaylist}
+                      onSelect={handleSongSelect}
+                      onDragEnd={handlePlaylistDragEnd}
+                    />
+                  </div>
+                </div>
+                
+                {/* SavedPlaylists scrolls normally underneath */}
+                <div className="mt-6 px-4 md:px-0">
+                  <SavedPlaylists
+                    savedPlaylists={savedPlaylists}
+                    onLoad={loadPlaylist}
+                    onDelete={deletePlaylist}
+                  />
+                </div>
               </div>
 
-              {/* ## Right Column (Filtering & Playlists) ## */}
-              <div>
-                {/* MOVED HERE: These components are now in the right column */}
-                <div className="sticky top-4 space-y-6">
-    {selectedSong && (
-      <>
-        <SelectedSongDisplay
-          song={selectedSong}
-          onClear={clearSelection}
-          onAddToPlaylist={addToPlaylist}
-        />
-        <FilterControls
-          filterParams={filterParams}
-          onFilterChange={setFilterParams}
-          selectedSong={selectedSong}
-        />
-      </>
-    )}
+              {/* ## Left Column (Now appears SECOND on mobile) ## */}
+              <div className="w-full md:w-1/2 order-2 md:order-1 px-4 md:px-0">
+                <div className="mt-8 md:mt-0">
+                  <Instructions />
+                  <SearchBar onSearch={setSearchTerm} />
+                  <h2 className="text-2xl font-semibold my-4 border-b pb-2">
+                    {selectedSong ? 'Compatible Tracks' : 'Your Library'}
+                  </h2>
+                  <SongList
+                    songs={displaySongs}
+                    onSongSelect={handleSongSelect}
+                    onAddToPlaylist={addToPlaylist}
+                  />
+                </div>
+              </div>
 
-    <CurrentPlaylist
-      playlist={currentPlaylist}
-      onSave={saveCurrentPlaylist}
-      onRemove={removeFromPlaylist}
-      onSelect={handleSongSelect}
-      onDragEnd={handlePlaylistDragEnd}
-    />
-  
-
-  {/* SavedPlaylists will now scroll underneath the sticky panel */}
-  <div className="mt-6">
-      <SavedPlaylists
-        savedPlaylists={savedPlaylists}
-        onLoad={loadPlaylist}
-        onDelete={deletePlaylist}
-      />
-  </div>
-  </div>
-</div>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>

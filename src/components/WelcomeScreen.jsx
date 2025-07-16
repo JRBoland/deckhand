@@ -4,7 +4,7 @@ import logo from '../assets/madebybondla.png'; // Import your logo
 
 const WelcomeScreen = ({ onFileUpload }) => {
   return (
-    <div className="text-center p-4">
+    <div className="text-center p-4 sm:p-8">
       
       <h1 className="text-4xl font-bold text-gray-800">
         📀 DECKHAND 📀
