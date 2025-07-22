@@ -1,8 +1,9 @@
+// src/components/CurrentPlaylist.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { exportPlaylistToFile } from '../utils/exportHelper';
 
-const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd }) => {
+const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLoadClick, hasSavedPlaylists }) => {
   const listEndRef = useRef(null);
   const [showExportOptions, setShowExportOptions] = useState(false);
 
@@ -24,8 +25,15 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd }) =>
           <h3 className="text-xl font-bold">Current Setlist</h3>
           <div className="flex items-center gap-2">
             <button
+              onClick={onLoadClick}
+              disabled={!hasSavedPlaylists}
+              className="px-4 py-2 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg shadow-sm hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            >
+              Load
+            </button>
+            <button
               onClick={onSave}
-              disabled={playlist.length < 2}
+              disabled={playlist.length < 1}
               className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 disabled:bg-gray-400"
             >
               Save
@@ -40,7 +48,6 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd }) =>
               </button>
               {showExportOptions && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 text-left">
-                  {/* CORRECTED: Use buttons instead of anchor tags */}
                   <button onClick={() => handleExport('txt')} className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export as .txt</button>
                   <button onClick={() => handleExport('csv')} className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export as .csv</button>
                 </div>

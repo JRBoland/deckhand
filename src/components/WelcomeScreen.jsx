@@ -39,7 +39,7 @@ const WelcomeScreen = ({ onFileUpload }) => {
       <img
         src={logo}
         alt="DJ Set Planner Logo"
-        className="mx-auto mb-8 w-96 h-auto mt-8" // Adjust size as needed
+        className="mx-auto w-96 h-auto mt-8" // Adjust size as needed
       />
     </div>
   );

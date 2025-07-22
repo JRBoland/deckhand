@@ -1,6 +1,5 @@
 import React from 'react';
 
-// NEW: Helper function to format seconds into MM:SS
 const formatTime = (seconds) => {
   if (isNaN(seconds) || seconds === null) return "N/A";
   const min = Math.floor(seconds / 60);
@@ -18,18 +17,27 @@ const SongList = ({ songs, onSongSelect, onAddToPlaylist }) => {
       {songs.map((song) => (
         <div
           key={song.id}
-          className="p-4 bg-white rounded-lg shadow-md flex flex-col sm:flex-row sm:justify-between sm:items-center"
+          className="p-3 bg-white rounded-lg shadow-md" // Reduced padding
         >
-          {/* Main info section */}
-          <div
-            className="flex-grow cursor-pointer min-w-0"
-            onClick={() => onSongSelect(song)}
-          >
-            <p className="font-bold text-lg text-gray-800 truncate">{song.name}</p>
-            <p className="text-gray-600 truncate">{song.artist}</p>
-            
-            {/* Primary metadata */}
-            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 sm:mt-1">
+          {/* Top section: Title, Artist, and Add button */}
+          <div className="flex justify-between items-start">
+            <div
+              className="flex-grow cursor-pointer min-w-0"
+              onClick={() => onSongSelect(song)}
+            >
+              <p className="font-bold text-base text-gray-800 truncate">{song.name}</p>
+              <p className="text-sm text-gray-600 truncate">{song.artist}</p>
+            </div>
+            <button
+              onClick={() => onAddToPlaylist(song)}
+              className="ml-2 px-3 py-1 text-sm font-semibold text-white bg-green-500 rounded-lg shadow-sm hover:bg-green-600 flex-shrink-0"
+            >
+              Add
+            </button>
+          </div>
+
+          {/* Bottom section: All metadata */}
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 sm:mt-1">
               <p className="font-semibold text-sm text-indigo-600">BPM: {song.bpm}</p>
               <p className="font-semibold text-sm text-purple-600">Key: {song.key}</p>
             </div>
@@ -40,15 +48,6 @@ const SongList = ({ songs, onSongSelect, onAddToPlaylist }) => {
               {song.genre && <span> Genre: {song.genre}</span>}
               {song.totalTime > 0 && <span> Length: {formatTime(song.totalTime)}</span>}
             </div>
-          </div>
-          
-          {/* "Add" button */}
-          <button
-            onClick={() => onAddToPlaylist(song)}
-            className="mt-4 sm:mt-0 sm:ml-4 px-4 py-2 w-full sm:w-auto text-sm font-semibold text-white bg-green-500 rounded-lg shadow-sm hover:bg-green-600 flex-shrink-0"
-          >
-            Add
-          </button>
         </div>
       ))}
     </div>
