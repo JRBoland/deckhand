@@ -217,7 +217,7 @@ function App() {
           <div className="p-0 md:p-8">
             <header className="relative md:text-center mb-4 md:mb-8 px-4 pt-4 md:px-0 md:pt-0">
               <div className="flex items-center justify-between md:justify-center">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-800">📀 DECKHAND</h1>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-800 [-webkit-tap-highlight-color:transparent]">📀 DECKHAND</h1>
                 {/* Grouping the mobile buttons */}
                 <div className="flex items-center md:hidden">
                   <button onClick={scrollToSearch} className="p-2 rounded-full hover:bg-gray-200 active:bg-gray-300 transition">
