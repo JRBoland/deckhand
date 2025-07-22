@@ -27,14 +27,14 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLo
             <button
               onClick={onLoadClick}
               disabled={!hasSavedPlaylists}
-              className="px-4 py-2 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg shadow-sm hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg shadow-sm hover:bg-gray-300 active:scale-95 transition-transform disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
               Load
             </button>
             <button
               onClick={onSave}
               disabled={playlist.length < 1}
-              className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 disabled:bg-gray-400"
+              className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 active:bg-indigo-800 active:scale-95 transition-transform rounded-lg shadow-md hover:bg-indigo-700 disabled:bg-gray-400"
             >
               Save
             </button>
@@ -42,7 +42,7 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLo
               <button
                 onClick={() => setShowExportOptions(!showExportOptions)}
                 disabled={playlist.length === 0}
-                className="px-4 py-2 text-sm font-semibold text-white bg-slate-600 rounded-lg shadow-md hover:bg-slate-700 disabled:bg-gray-400"
+                className="px-4 py-2 text-sm font-semibold text-white bg-slate-600 active:bg-slate-800 active:scale-95 transition-transform rounded-lg shadow-md hover:bg-slate-700 disabled:bg-gray-400"
               >
                 Export
               </button>
@@ -81,7 +81,7 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLo
                         </div>
                         <button
                           onClick={() => onRemove(index)}
-                          className="ml-2 text-red-500 hover:text-red-700 font-bold text-xl flex-shrink-0"
+                          className="ml-2 text-red-500 hover:text-red-700 font-bold text-xl flex-shrink-0 active:text-red-800 active:scale-125 transition-transform"
                           aria-label="Remove song"
                         >
                           &times;

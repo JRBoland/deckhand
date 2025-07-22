@@ -30,7 +30,7 @@ const SongList = ({ songs, onSongSelect, onAddToPlaylist }) => {
             </div>
             <button
               onClick={() => onAddToPlaylist(song)}
-              className="ml-2 px-3 py-1 text-sm font-semibold text-white bg-green-500 rounded-lg shadow-sm hover:bg-green-600 flex-shrink-0"
+              className="ml-2 px-3 py-1 text-sm font-semibold text-white bg-green-500 rounded-lg shadow-sm hover:bg-green-600 flex-shrink-0 active:bg-green-700 active:scale-95 transition-transform"
             >
               Add
             </button>
