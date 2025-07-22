@@ -2,7 +2,7 @@
 import React from 'react';
 import FilterControls from './FilterControls';
 
-const MobileFilters = ({ isOpen, onClose, filterParams, onFilterChange, yearRange, allGenres, songLengthRange, onClearLibrary }) => {
+const MobileFilters = ({ isOpen, onClose, filterParams, onFilterChange, yearRange, filteredGenres, songLengthRange, onClearLibrary }) => {
   if (!isOpen) return null;
 
   return (
@@ -18,7 +18,7 @@ const MobileFilters = ({ isOpen, onClose, filterParams, onFilterChange, yearRang
           filterParams={filterParams}
           onFilterChange={onFilterChange}
           yearRange={yearRange}
-          allGenres={allGenres}
+          filteredGenres={filteredGenres}
           songLengthRange={songLengthRange}
         />
         
