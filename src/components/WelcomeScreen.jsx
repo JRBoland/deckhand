@@ -22,17 +22,17 @@ const WelcomeScreen = ({ onFileUpload }) => {
        <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md border">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">How It Works:</h2>
         <div className="text-left space-y-4 text-gray-600 text-sm">
-            <p>
-            <strong className="text-gray-600">1. Export Your Library:</strong> Export your library as an XML from Rekordbox. (File → Export Collection in XML Format).
+          <p>
+            <strong className="text-gray-600">1. Export & Upload:</strong> Export your library from Rekordbox (File → Export Collection in XML Format) and upload it above.
           </p>
           <p>
-            <strong className="text-gray-600">2. Upload Your Library:</strong> Click "Choose File" and select your exported XML file to upload your playlist or collection from Rekordbox (as a `.xml` file).
+            <strong className="text-gray-600">2. Select a Track:</strong> Click on any song in your library to see a list of potential next tracks.
           </p>
           <p>
-            <strong className="text-gray-600">3. Find Compatible Tracks:</strong> Click on any song to see a list of harmonically compatible tracks based on BPM and Camelot key.
+            <strong className="text-gray-600">3. Filter with Precision:</strong> Enable and adjust powerful filters for BPM, Harmonic Key, Genre, Release Year, and Song Length to find the perfect match.
           </p>
           <p>
-            <strong className="text-gray-600">4. Build & Save Your Set:</strong> Add songs to your setlist, drag to reorder them, and save your creations for later.
+            <strong className="text-gray-600">4. Build & Export Your Set:</strong> Add songs to your setlist, drag to reorder them, and export your creation as a text or CSV file to help you with your next mix.
           </p>
         </div>
       </div>

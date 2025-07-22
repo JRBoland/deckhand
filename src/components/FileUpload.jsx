@@ -34,14 +34,18 @@ const FileUpload = ({ onFileUpload }) => {
         // --- END ERROR HANDLING ---
 
         const formattedSongs = Array.isArray(tracks) 
-          ? tracks.map(track => ({
-              id: track.TrackID,
-              name: track.Name,
-              artist: track.Artist,
-              bpm: parseFloat(track.AverageBpm),
-              key: track.Tonality,
-            }))
-          : []; // Handle case where there's only one track
+  ? tracks.map(track => ({
+      id: track.TrackID,
+      name: track.Name,
+      artist: track.Artist,
+      bpm: parseFloat(track.AverageBpm),
+      key: track.Tonality,
+      // CORRECTED: Ensure these fields are always read
+      year: track.Year || null, 
+      genre: track.Genre || 'Unknown',
+      totalTime: track.TotalTime ? parseInt(track.TotalTime, 10) : 0,
+    }))
+  : []; // Handle case where there's only one track
 
         onFileUpload(formattedSongs);
       });

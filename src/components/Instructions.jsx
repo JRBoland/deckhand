@@ -18,10 +18,11 @@ const Instructions = () => {
       </button>
       <h4 className="font-bold mb-2">Quick Guide</h4>
       <ul className="list-disc list-inside text-sm space-y-1">
-        <li><strong>Find a Song:</strong> Use the search bar or scroll through your library.</li>
-        <li><strong>See Compatible Tracks:</strong> Click any song to see tracks that mix well with it.</li>
-        <li><strong>Build Your Set:</strong> Click the "Add" button on any song to add it to your Current Setlist.</li>
-        <li><strong>Reorder & Refine:</strong> In the setlist on the right, drag songs to reorder them, click to select, or '×' to remove.</li>
+        <li><strong>Select a Song:</strong> Click any song in your library to find compatible tracks.</li>
+        <li><strong>Filter Your Results:</strong> Use the Filter Options to enable and adjust filters for BPM, Key, Genre, Year, and Length.</li>
+        <li><strong>Build Your Setlist:</strong> Click the "Add" button on any song to add it to your current setlist.</li>
+        <li><strong>Reorder & Refine:</strong> In the setlist, drag songs to reorder them, click to select, or '×' to remove.</li>
+        <li><strong>Save & Export:</strong> Save and/or Export your setlist to refer to later when you play out your new mix!</li>
       </ul>
     </div>
   );

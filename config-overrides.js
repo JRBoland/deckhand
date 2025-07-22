@@ -6,7 +6,8 @@ module.exports = override(
     config.resolve.fallback = {
       ...config.resolve.fallback,
       "timers": require.resolve("timers-browserify"),
-      "buffer": require.resolve("buffer/")
+      "buffer": require.resolve("buffer/"),
+      "stream": require.resolve("stream-browserify"),
     };
     return config;
   }

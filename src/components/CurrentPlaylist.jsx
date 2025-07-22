@@ -1,11 +1,10 @@
-// src/components/CurrentPlaylist.jsx
-import React, { useState, useEffect, useRef } from 'react'; // Import useState
+import React, { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { exportPlaylistToFile } from '../utils/exportHelper'; // Import our new helper
+import { exportPlaylistToFile } from '../utils/exportHelper';
 
 const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd }) => {
   const listEndRef = useRef(null);
-  const [showExportOptions, setShowExportOptions] = useState(false); // State for dropdown
+  const [showExportOptions, setShowExportOptions] = useState(false);
 
   useEffect(() => {
     if (listEndRef.current) {
@@ -15,7 +14,7 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd }) =>
 
   const handleExport = (fileType) => {
     exportPlaylistToFile(playlist, fileType);
-    setShowExportOptions(false); // Hide options after exporting
+    setShowExportOptions(false);
   };
 
   return (
@@ -23,7 +22,6 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd }) =>
       <div className="bg-white p-4 rounded-lg shadow-lg md:mb-6">
         <div className="flex justify-between items-center mb-3">
           <h3 className="text-xl font-bold">Current Setlist</h3>
-          {/* Container for the action buttons */}
           <div className="flex items-center gap-2">
             <button
               onClick={onSave}
@@ -32,7 +30,6 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd }) =>
             >
               Save
             </button>
-            {/* New Export Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setShowExportOptions(!showExportOptions)}
@@ -42,9 +39,10 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd }) =>
                 Export
               </button>
               {showExportOptions && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
-                  <a onClick={() => handleExport('txt')} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Export as .txt</a>
-                  <a onClick={() => handleExport('csv')} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">Export as .csv</a>
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 text-left">
+                  {/* CORRECTED: Use buttons instead of anchor tags */}
+                  <button onClick={() => handleExport('txt')} className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export as .txt</button>
+                  <button onClick={() => handleExport('csv')} className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export as .csv</button>
                 </div>
               )}
             </div>
@@ -52,7 +50,6 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd }) =>
         </div>
         
         <Droppable droppableId="playlist">
-        {/* ... rest of the component remains the same ... */}
           {(provided) => (
             <div
               ref={listEndRef}
@@ -75,7 +72,6 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd }) =>
                             {song.name} - {song.artist}
                           </p>
                         </div>
-                        
                         <button
                           onClick={() => onRemove(index)}
                           className="ml-2 text-red-500 hover:text-red-700 font-bold text-xl flex-shrink-0"
