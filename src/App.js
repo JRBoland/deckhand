@@ -12,6 +12,11 @@ import MobileFilters from './components/MobileFilters';
 import LoadPlaylistModal from './components/LoadPlaylistModal';
 
 function App() {
+  const [isInstructionsVisible, setIsInstructionsVisible] = useState(() => {
+    const saved = localStorage.getItem('deckhand-instructionsVisible');
+    // If nothing is saved, default to true (visible). Otherwise, use the saved value.
+    return saved !== null ? JSON.parse(saved) : true;
+  });
   const [allSongs, setAllSongs] = useState(() => {
     const saved = localStorage.getItem('deckhand-allSongs');
     return saved ? JSON.parse(saved) : [];
@@ -59,10 +64,16 @@ function App() {
     return saved ? JSON.parse(saved) : [];
   });
 
+  const showInstructions = () => setIsInstructionsVisible(true);
+
   useEffect(() => {
     localStorage.setItem('deckhand-currentPlaylist', JSON.stringify(currentPlaylist));
     localStorage.setItem('deckhand-savedPlaylists', JSON.stringify(savedPlaylists));
   }, [currentPlaylist, savedPlaylists]);
+
+  useEffect(() => {
+    localStorage.setItem('deckhand-instructionsVisible', JSON.stringify(isInstructionsVisible));
+  }, [isInstructionsVisible]);
 
   const handleFileUpload = (songs) => {
     setAllSongs(songs);
@@ -158,30 +169,60 @@ function App() {
 
   useEffect(() => {
     if (!allSongs.length) return;
+
     let songsToShow = [...allSongs];
+
+    // --- STEP 1: Apply compatibility filters first (if a song is selected) ---
     if (selectedSong) {
       songsToShow = allSongs.filter((song) => {
         if (song.id === selectedSong.id) return false;
-        const isBpmMatch = !filterParams.bpm.enabled || (song.bpm >= (selectedSong.bpm * (1 - filterParams.bpm.value / 100)) && song.bpm <= (selectedSong.bpm * (1 + filterParams.bpm.value / 100)));
+
+        const isBpmMatch = !filterParams.bpm.enabled || (
+          song.bpm >= (selectedSong.bpm * (1 - filterParams.bpm.value / 100)) &&
+          song.bpm <= (selectedSong.bpm * (1 + filterParams.bpm.value / 100))
+        );
+        
         const isKeyMatch = !filterParams.key.enabled || checkCamelotCompatibility(selectedSong.key, song.key);
+        
         const songYear = parseInt(song.year, 10);
-        const isYearMatch = !filterParams.year.enabled || (!song.year ? false : ((!filterParams.year.min || songYear >= filterParams.year.min) && (!filterParams.year.max || songYear <= filterParams.year.max)));
-        const isGenreMatch = !filterParams.genre.enabled || filterParams.genre.selected.length === 0 || filterParams.genre.selected.includes(song.genre);
+        const isYearMatch = !filterParams.year.enabled || (
+          !song.year ? true : ( // If song has no year, it now PASSES the filter
+            !isNaN(songYear) &&
+            (!filterParams.year.min || songYear >= filterParams.year.min) &&
+            (!filterParams.year.max || songYear <= filterParams.year.max)
+          )
+        );
+        
+        const isGenreMatch = !filterParams.genre.enabled || 
+          filterParams.genre.selected.length === 0 || 
+          filterParams.genre.selected.includes(song.genre);
+        
         const lengthParams = filterParams.length;
         let isLengthMatch = !lengthParams.enabled;
         if (lengthParams.enabled) {
+          const value1InSeconds = lengthParams.value1 * 60;
+          const value2InSeconds = lengthParams.value2 * 60;
           switch (lengthParams.comparison) {
-            case 'greater': isLengthMatch = song.totalTime >= lengthParams.value1; break;
-            case 'less': isLengthMatch = song.totalTime <= lengthParams.value1; break;
-            case 'between': isLengthMatch = song.totalTime >= lengthParams.value1 && song.totalTime <= lengthParams.value2; break;
+            case 'greater': isLengthMatch = song.totalTime >= value1InSeconds; break;
+            case 'less': isLengthMatch = song.totalTime <= value1InSeconds; break;
+            case 'between': isLengthMatch = song.totalTime >= value1InSeconds && song.totalTime <= value2InSeconds; break;
             default: isLengthMatch = true;
           }
         }
+
         return isBpmMatch && isKeyMatch && isYearMatch && isGenreMatch && isLengthMatch;
       });
-    } else if (searchTerm) {
-      songsToShow = songsToShow.filter((song) => song.name.toLowerCase().includes(searchTerm.toLowerCase()) || song.artist.toLowerCase().includes(searchTerm.toLowerCase()));
     }
+
+    // --- STEP 2: Apply search term to the (potentially filtered) list ---
+    if (searchTerm) {
+      songsToShow = songsToShow.filter(
+        (song) =>
+          song.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          song.artist.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+    
     setDisplaySongs(songsToShow);
   }, [searchTerm, selectedSong, allSongs, filterParams]);
 
@@ -197,6 +238,8 @@ function App() {
           filteredGenres={filteredGenres}
           songLengthRange={songLengthRange}
           onClearLibrary={clearLibrary}
+          onSetInstructionsVisible={setIsInstructionsVisible} 
+          isInstructionsVisible={isInstructionsVisible} 
         />
         <LoadPlaylistModal
           isOpen={isLoadModalOpen}
@@ -245,7 +288,7 @@ function App() {
             {/* MOBILE-ONLY LAYOUT */}
             <div className="md:hidden flex flex-col h-[calc(100vh-100px)]">
               <div className="flex-shrink-0 bg-white p-4 border-b border-black-300 shadow-lg">
-                <Instructions />
+                <Instructions isVisible={isInstructionsVisible} onDismiss={() => setIsInstructionsVisible(false)}/>
                 {selectedSong && (
                   <SelectedSongDisplay
                     song={selectedSong}
@@ -279,7 +322,10 @@ function App() {
             {/* DESKTOP-ONLY LAYOUT */}
             <div className="hidden md:grid md:grid-cols-2 md:gap-8">
               <div className="overflow-visible">
-                <Instructions />
+                <Instructions 
+    isVisible={isInstructionsVisible} 
+    onDismiss={() => setIsInstructionsVisible(false)}
+  />
                 <div className="sticky top-0 z-10 bg-[#F9FAFB] pt-4 -mx-4 px-4">
                   <SearchBar onSearch={setSearchTerm} isHighlighted={isSearchHighlighted}/>
                 </div>
@@ -308,6 +354,9 @@ function App() {
                         yearRange={yearRange}
                         filteredGenres={filteredGenres}
                         songLengthRange={songLengthRange}
+                        onShowInstructions={showInstructions}
+                        onSetInstructionsVisible={setIsInstructionsVisible} 
+                        isInstructionsVisible={isInstructionsVisible}
                       />
                     </>
                   )}

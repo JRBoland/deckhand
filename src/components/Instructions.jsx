@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const Instructions = () => {
-  const [isVisible, setIsVisible] = useState(true);
-
+const Instructions = ({ isVisible, onDismiss }) => {
   if (!isVisible) {
     return null;
   }
@@ -10,7 +8,7 @@ const Instructions = () => {
   return (
     <div className="relative bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 mb-6 rounded-r-lg shadow">
       <button
-        onClick={() => setIsVisible(false)}
+        onClick={onDismiss}
         className="absolute top-2 right-2 text-blue-500 hover:text-blue-700 font-bold"
         aria-label="Dismiss instructions"
       >
