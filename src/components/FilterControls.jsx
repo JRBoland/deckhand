@@ -4,7 +4,6 @@ import { useDetectOutsideClick } from '../utils/useDetectOutsideClick';
 const FilterControls = ({ filterParams, onFilterChange, yearRange, filteredGenres = [], songLengthRange, isInstructionsVisible, onSetInstructionsVisible, selectedSong }) => {
   const [genreDropdownRef, isGenreOpen, setIsGenreOpen] = useDetectOutsideClick(false);
 
-  // Guard against missing initial props
   if (!filterParams.length || !yearRange || !filteredGenres) {
     return null;
   }
@@ -24,14 +23,18 @@ const FilterControls = ({ filterParams, onFilterChange, yearRange, filteredGenre
     const minutes = Math.floor(valueInSeconds / 60);
     const seconds = valueInSeconds % 60;
 
+    // CORRECTED: This now correctly preserves the existing seconds value
     const handleMinuteChange = (e) => {
       const newMinutes = parseInt(e.target.value) || 0;
-      onChange((newMinutes * 60) + seconds);
+      const currentSeconds = valueInSeconds % 60; // Get current seconds from total
+      onChange((newMinutes * 60) + currentSeconds);
     };
 
+    // CORRECTED: This now correctly preserves the existing minutes value
     const handleSecondChange = (e) => {
       const newSeconds = parseInt(e.target.value) || 0;
-      onChange((minutes * 60) + newSeconds);
+      const currentMinutesInSeconds = Math.floor(valueInSeconds / 60) * 60; // Get current minutes from total
+      onChange(currentMinutesInSeconds + newSeconds);
     };
 
     return (

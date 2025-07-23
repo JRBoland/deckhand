@@ -172,7 +172,6 @@ function App() {
 
     let songsToShow = [...allSongs];
 
-    // --- STEP 1: Apply compatibility filters first (if a song is selected) ---
     if (selectedSong) {
       songsToShow = allSongs.filter((song) => {
         if (song.id === selectedSong.id) return false;
@@ -186,7 +185,7 @@ function App() {
         
         const songYear = parseInt(song.year, 10);
         const isYearMatch = !filterParams.year.enabled || (
-          !song.year ? true : ( // If song has no year, it now PASSES the filter
+          !song.year ? true : (
             !isNaN(songYear) &&
             (!filterParams.year.min || songYear >= filterParams.year.min) &&
             (!filterParams.year.max || songYear <= filterParams.year.max)
@@ -197,25 +196,34 @@ function App() {
           filterParams.genre.selected.length === 0 || 
           filterParams.genre.selected.includes(song.genre);
         
+        // --- CORRECTED SONG LENGTH LOGIC ---
         const lengthParams = filterParams.length;
         let isLengthMatch = !lengthParams.enabled;
+
         if (lengthParams.enabled) {
-          const value1InSeconds = lengthParams.value1 * 60;
-          const value2InSeconds = lengthParams.value2 * 60;
+          // REMOVED the '* 60' multiplication. We are now comparing seconds to seconds.
+          const value1InSeconds = lengthParams.value1;
+          const value2InSeconds = lengthParams.value2;
+
           switch (lengthParams.comparison) {
-            case 'greater': isLengthMatch = song.totalTime >= value1InSeconds; break;
-            case 'less': isLengthMatch = song.totalTime <= value1InSeconds; break;
-            case 'between': isLengthMatch = song.totalTime >= value1InSeconds && song.totalTime <= value2InSeconds; break;
-            default: isLengthMatch = true;
+            case 'greater':
+              isLengthMatch = song.totalTime >= value1InSeconds;
+              break;
+            case 'less':
+              isLengthMatch = song.totalTime <= value1InSeconds;
+              break;
+            case 'between':
+              isLengthMatch = song.totalTime >= value1InSeconds && song.totalTime <= value2InSeconds;
+              break;
+            default:
+              isLengthMatch = true;
           }
         }
+        // --- END OF CORRECTION ---
 
         return isBpmMatch && isKeyMatch && isYearMatch && isGenreMatch && isLengthMatch;
       });
-    }
-
-    // --- STEP 2: Apply search term to the (potentially filtered) list ---
-    if (searchTerm) {
+    } else if (searchTerm) {
       songsToShow = songsToShow.filter(
         (song) =>
           song.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -225,7 +233,6 @@ function App() {
     
     setDisplaySongs(songsToShow);
   }, [searchTerm, selectedSong, allSongs, filterParams]);
-
   return (
     <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
       <div className="container mx-auto max-w-6xl flex-grow">
