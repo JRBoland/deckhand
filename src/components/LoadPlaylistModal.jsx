@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const LoadPlaylistModal = ({ onShowInstructions, isOpen, onClose, savedPlaylists, onLoad, onDelete, onRename }) => {
+const LoadPlaylistModal = ({ isOpen, onClose, savedPlaylists, onLoad, onDelete, onRename }) => {
   const [isManageMode, setIsManageMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [newName, setNewName] = useState('');
