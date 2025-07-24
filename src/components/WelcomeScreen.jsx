@@ -32,7 +32,7 @@ const WelcomeScreen = ({ onFileUpload }) => {
             <strong className="text-gray-600">3. Filter with Precision:</strong> Enable and adjust powerful filters for BPM, Harmonic Key, Genre, Release Year, and Song Length to find the perfect match.
           </p>
           <p>
-            <strong className="text-gray-600">4. Build & Export Your Set:</strong> Add songs to your setlist, drag to reorder them, and export your creation as a text or CSV file to help you with your next mix.
+            <strong className="text-gray-600">4. Build & Export Your Set:</strong> Add songs to your setlist, drag to reorder them (hold & drag on mobile), and export your creation as a text or CSV file to help you with your next mix.
           </p>
         </div>
       </div>

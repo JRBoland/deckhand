@@ -19,7 +19,7 @@ const Instructions = ({ isVisible, onDismiss }) => {
         <li><strong>Select a Song:</strong> Click any song in your library to find compatible tracks.</li>
         <li><strong>Filter Your Results:</strong> Use the Filter Options to enable and adjust filters for BPM, Key, Genre, Year, and Length.</li>
         <li><strong>Build Your Setlist:</strong> Click the "Add" button on any song to add it to your current setlist.</li>
-        <li><strong>Reorder & Refine:</strong> In the setlist, drag songs to reorder them, click to select, or '×' to remove.</li>
+        <li><strong>Reorder & Refine:</strong> In the setlist, drag songs to reorder them (hold & drag on mobile), click to select, or '×' to remove.</li>
         <li><strong>Save & Export:</strong> Save and/or Export your setlist to refer to later when you play out your new mix!</li>
       </ul>
     </div>

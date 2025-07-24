@@ -6,12 +6,18 @@ import { exportPlaylistToFile } from '../utils/exportHelper';
 const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLoadClick, hasSavedPlaylists }) => {
   const listEndRef = useRef(null);
   const [showExportOptions, setShowExportOptions] = useState(false);
+  
+  // NEW: Create a ref to store the previous length of the playlist
+  const prevPlaylistLengthRef = useRef(playlist.length);
 
   useEffect(() => {
-    if (listEndRef.current) {
+    // UPDATED: Only scroll to bottom if a song was ADDED (list grew longer)
+    if (listEndRef.current && playlist.length > prevPlaylistLengthRef.current) {
       listEndRef.current.scrollTop = listEndRef.current.scrollHeight;
     }
-  }, [playlist]);
+    // Update the ref to the new length for the next time the component renders
+    prevPlaylistLengthRef.current = playlist.length;
+  }, [playlist]); // This effect still runs whenever the playlist changes
 
   const handleExport = (fileType) => {
     exportPlaylistToFile(playlist, fileType);
