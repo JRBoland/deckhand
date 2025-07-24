@@ -54,4 +54,4 @@ const SongList = ({ songs, onSongSelect, onAddToPlaylist }) => {
   );
 };
 
-export default SongList;
+export default React.memo(SongList);

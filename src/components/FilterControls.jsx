@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDetectOutsideClick } from '../utils/useDetectOutsideClick';
 
-const FilterControls = ({ filterParams, onFilterChange, yearRange, filteredGenres = [], songLengthRange, isInstructionsVisible, onSetInstructionsVisible, selectedSong }) => {
+const FilterControls = ({ isDesktop, filterParams, onFilterChange, yearRange, filteredGenres = [], songLengthRange, isInstructionsVisible, onSetInstructionsVisible, selectedSong }) => {
+  const [isOpen, setIsOpen] = useState(false); 
   const [genreDropdownRef, isGenreOpen, setIsGenreOpen] = useDetectOutsideClick(false);
 
   if (!filterParams.length || !yearRange || !filteredGenres) {
@@ -69,8 +70,17 @@ const FilterControls = ({ filterParams, onFilterChange, yearRange, filteredGenre
 
   return (
     <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-      <h3 className="text-lg mb-3 text-gray-800">Filter Options</h3>
-      
+      <div className="flex justify-between items-center">
+      <h3 className="text-lg  text-gray-800">Filter Options</h3>
+      {isDesktop && (
+          <button onClick={() => setIsOpen(!isOpen)} className="text-sm text-blue-600 hover:underline">
+            {isOpen ? 'Hide' : 'Show'}
+          </button>
+        )}
+        </div>
+        {(isOpen || !isDesktop) && (
+        <>
+          <hr className="my-3" />
       <div className="space-y-4">
 
         <div className="p-2 rounded-lg bg-gray-50">
@@ -167,24 +177,19 @@ const FilterControls = ({ filterParams, onFilterChange, yearRange, filteredGenre
             </div>
           )}
         </div>
-<hr className="my-3" />
-<div className="flex justify-between items-center p-2 rounded-lg bg-gray-50 mb-4">
-        <label className="font-semibold">Show Quick Guide</label>
-        <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-          <input 
-            type="checkbox" 
-            checked={isInstructionsVisible} 
-            onChange={() => onSetInstructionsVisible(!isInstructionsVisible)} 
-            id="toggle-instructions" 
-            className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" 
-          />
-          <label 
-            htmlFor="toggle-instructions" 
-            className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
-          ></label>
-        </div>
+        <hr className="my-3" />
+            {!isDesktop && (
+            <div className="flex justify-between items-center p-2 rounded-lg bg-gray-50 mb-4">
+              <label className="font-semibold">Show Quick Guide</label>
+              <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                <input type="checkbox" checked={isInstructionsVisible} onChange={() => onSetInstructionsVisible(!isInstructionsVisible)} id="toggle-instructions-mobile" className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                <label htmlFor="toggle-instructions-mobile" className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+              </div>
+            </div>
+          )}
       </div>
-      </div>
+      </>
+      )}
     </div>
   );
 };

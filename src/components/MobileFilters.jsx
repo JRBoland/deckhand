@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FilterControls from './FilterControls';
 
-const MobileFilters = ({ isOpen, onClose, filterParams, onFilterChange, yearRange, filteredGenres, songLengthRange, onClearLibrary, isInstructionsVisible, onSetInstructionsVisible }) => {
+const MobileFilters = ({ isDesktop, isOpen, onClose, filterParams, onFilterChange, yearRange, filteredGenres, songLengthRange, onClearLibrary, isInstructionsVisible, onSetInstructionsVisible }) => {
   // NEW: Create a local 'draft' state to hold changes while the modal is open.
   const [draftParams, setDraftParams] = useState(filterParams);
 
@@ -36,6 +36,7 @@ const MobileFilters = ({ isOpen, onClose, filterParams, onFilterChange, yearRang
             songLengthRange={songLengthRange}
             isInstructionsVisible={isInstructionsVisible}
             onSetInstructionsVisible={onSetInstructionsVisible}
+            isDesktop={isDesktop}
           />
         </div>
         

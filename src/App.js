@@ -1,5 +1,5 @@
 // src/App.js
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback  } from 'react';
 import { checkCamelotCompatibility } from './utils/camelotWheelHelper';
 import SongList from './components/SongList';
 import FilterControls from './components/FilterControls';
@@ -75,25 +75,29 @@ function App() {
     localStorage.setItem('deckhand-instructionsVisible', JSON.stringify(isInstructionsVisible));
   }, [isInstructionsVisible]);
 
-  const handleFileUpload = (songs) => {
+  const handleFileUpload = useCallback((songs) => {
     setAllSongs(songs);
     localStorage.setItem('deckhand-allSongs', JSON.stringify(songs));
-  };
+  }, []);
 
-  const handleSongSelect = (song) => setSelectedSong(song);
-  const clearSelection = () => setSelectedSong(null);
+  const handleSongSelect = useCallback((song) => {
+    setSelectedSong(song);
+  }, []);
+  const clearSelection = useCallback(() => {
+    setSelectedSong(null);
+  }, []);
   
-  const addToPlaylist = (song) => {
+  const addToPlaylist = useCallback((song) => {
     setCurrentPlaylist((prevPlaylist) => [...prevPlaylist, song]);
     setSelectedSong(song);
-  };
+  }, []);
 
-  const clearLibrary = () => {
+  const clearLibrary = useCallback(() => {
     if (window.confirm("Are you sure you want to clear your library and all saved playlists?")) {
       localStorage.clear();
       window.location.reload();
     }
-  };
+  }, []);
 
   const { yearRange, genreData, songLengthRange } = useMemo(() => {
     if (allSongs.length === 0) {
@@ -123,36 +127,36 @@ function App() {
 
   const filteredGenres = genreData.filter(g => g.count >= filterParams.genre.minCount);
 
-  const saveCurrentPlaylist = () => {
+  const saveCurrentPlaylist = useCallback(() => {
     const playlistName = prompt("Enter a name for this playlist:", `My Setlist ${savedPlaylists.length + 1}`);
     if (playlistName) {
       const newPlaylist = { id: Date.now(), name: playlistName, songs: currentPlaylist };
       setSavedPlaylists(prev => [...prev, newPlaylist]);
       setCurrentPlaylist([]);
     }
-  };
+  }, [currentPlaylist, savedPlaylists.length]);
 
-  const loadPlaylist = (songs) => {
+  const loadPlaylist = useCallback((songs) => {
     setCurrentPlaylist(songs);
-  };
+  }, []);
 
-  const deletePlaylist = (playlistId) => {
+  const deletePlaylist = useCallback((playlistId) => {
     if (window.confirm("Are you sure you want to delete this playlist?")) {
       setSavedPlaylists(prev => prev.filter(p => p.id !== playlistId));
     }
-  };
+  }, []);
 
-  const removeFromPlaylist = (indexToRemove) => {
+  const removeFromPlaylist = useCallback((indexToRemove) => {
     setCurrentPlaylist(prev => prev.filter((_, index) => index !== indexToRemove));
-  };
+  }, []);
 
-  const handlePlaylistDragEnd = (result) => {
+  const handlePlaylistDragEnd = useCallback((result) => {
     if (!result.destination) return;
     const items = Array.from(currentPlaylist);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     setCurrentPlaylist(items);
-  };
+  }, [currentPlaylist]);
 
   useEffect(() => {
     if (songLengthRange) {
@@ -247,6 +251,8 @@ function App() {
           onClearLibrary={clearLibrary}
           onSetInstructionsVisible={setIsInstructionsVisible} 
           isInstructionsVisible={isInstructionsVisible} 
+          isDesktop={false}
+          
         />
         <LoadPlaylistModal
           isOpen={isLoadModalOpen}
@@ -283,14 +289,24 @@ function App() {
                 </div>
               </div>
               <p className="text-gray-600 hidden sm:block">Harmonic Mixing & Playlist Builder</p>
-              {allSongs.length > 0 && (
+              <div className="hidden md:block absolute top-0 right-0">
+                {!isInstructionsVisible && (
+                  <button
+                    onClick={() => setIsInstructionsVisible(true)}
+                    className="ml-4 text-xs text-blue-600 hover:underline"
+                  >
+                    Show Quick Guide
+                  </button>)}
+
                 <button
                   onClick={clearLibrary}
-                  className="hidden md:block absolute top-0 right-0 text-xs text-gray-500 hover:text-red-600"
+                  className="text-xs ml-4 text-gray-500 hover:text-red-600"
                 >
                   Clear Library
                 </button>
-              )}
+                {/* NEW: Desktop-only "Show Guide" button */}
+                
+              </div>
             </header>
             {/* MOBILE-ONLY LAYOUT */}
             <div className="md:hidden flex flex-col h-[calc(100vh-100px)]">
@@ -327,12 +343,15 @@ function App() {
             </div>
 
             {/* DESKTOP-ONLY LAYOUT */}
+            <div className="hidden md:block">
+              {/* Instructions are now OUTSIDE and ABOVE the grid */}
+              <Instructions 
+                isVisible={isInstructionsVisible} 
+                onDismiss={() => setIsInstructionsVisible(false)}
+              />
             <div className="hidden md:grid md:grid-cols-2 md:gap-8">
               <div className="overflow-visible">
-                <Instructions 
-    isVisible={isInstructionsVisible} 
-    onDismiss={() => setIsInstructionsVisible(false)}
-  />
+                
                 <div className="sticky top-0 z-10 bg-[#F9FAFB] pt-4 -mx-4 px-4">
                   <SearchBar onSearch={setSearchTerm} isHighlighted={isSearchHighlighted}/>
                 </div>
@@ -364,6 +383,7 @@ function App() {
                         onShowInstructions={showInstructions}
                         onSetInstructionsVisible={setIsInstructionsVisible} 
                         isInstructionsVisible={isInstructionsVisible}
+                        isDesktop={true}
                       />
                     </>
                   )}
@@ -380,6 +400,7 @@ function App() {
               </div>
             </div>
           </div>
+            </div>
         )}
       </div>
       <footer className="text-center text-xs text-gray-500 py-1 md:mt-4">

@@ -59,19 +59,32 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLo
         <Droppable droppableId="playlist">
           {(provided) => (
             <div
-              ref={listEndRef}
+              // FIXED: Use a callback to assign both refs
+              ref={(el) => {
+                provided.innerRef(el);
+                listEndRef.current = el;
+              }}
               {...provided.droppableProps}
               className="space-y-2 overflow-y-auto max-h-32 md:max-h-96"
             >
               {playlist.length > 0 ? (
                 playlist.map((song, index) => (
-                  <Draggable key={`${song.id}-${index}`} draggableId={`${song.id}-${index}`} index={index}>
-                    {(provided) => (
+                  <Draggable 
+                    key={`${song.id}-${index}`} 
+                    draggableId={`${song.id}-${index}`} 
+                    index={index}
+                    shouldRespectForcePress={true}
+                  >
+                    {/* Add the 'snapshot' parameter here */}
+                    {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className="p-2 bg-gray-100 rounded flex items-center justify-between"
+                        // Conditionally add animation classes when snapshot.isDragging is true
+                        className={`p-2 bg-gray-100 rounded flex items-center justify-between transition-transform ${
+                          snapshot.isDragging ? 'scale-105 shadow-lg rotate-1' : ''
+                        }`}
                       >
                         <div className="flex-grow cursor-pointer truncate" onClick={() => onSelect(song)}>
                           <p className="font-semibold text-sm">
