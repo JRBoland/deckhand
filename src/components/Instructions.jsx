@@ -6,16 +6,16 @@ const Instructions = ({ isVisible, onDismiss }) => {
   }
 
   return (
-    <div className="relative bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 mb-6 rounded-r-lg shadow">
+    <div className="relative bg-primary/20 border-2 border-border rounded-brutal-lg p-4 mb-6 shadow-brutal">
       <button
         onClick={onDismiss}
-        className="absolute top-2 right-2 text-blue-500 hover:text-blue-700 font-bold"
+        className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-brutal border-2 border-border bg-surface font-display font-bold text-ink hover:bg-gray-100 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none shadow-brutal-sm transition-all"
         aria-label="Dismiss instructions"
       >
         &times;
       </button>
-      <h4 className="font-bold mb-2">Quick Guide</h4>
-      <ul className="list-disc list-inside text-sm space-y-1">
+      <h4 className="font-display font-bold text-ink mb-2">Quick Guide</h4>
+      <ul className="list-disc list-inside text-sm space-y-1 text-ink font-sans">
         <li><strong>Select a Song:</strong> Click any song in your library to find compatible tracks.</li>
         <li><strong>Filter Your Results:</strong> Use the Filter Options to enable and adjust filters for BPM, Key, Genre, Year, and Length.</li>
         <li><strong>Build Your Setlist:</strong> Click the "Add" button on any song to add it to your current setlist.</li>

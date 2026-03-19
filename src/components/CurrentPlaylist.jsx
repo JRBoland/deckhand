@@ -6,18 +6,14 @@ import { exportPlaylistToFile } from '../utils/exportHelper';
 const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLoadClick, hasSavedPlaylists }) => {
   const listEndRef = useRef(null);
   const [showExportOptions, setShowExportOptions] = useState(false);
-  
-  // NEW: Create a ref to store the previous length of the playlist
   const prevPlaylistLengthRef = useRef(playlist.length);
 
   useEffect(() => {
-    // UPDATED: Only scroll to bottom if a song was ADDED (list grew longer)
     if (listEndRef.current && playlist.length > prevPlaylistLengthRef.current) {
       listEndRef.current.scrollTop = listEndRef.current.scrollHeight;
     }
-    // Update the ref to the new length for the next time the component renders
     prevPlaylistLengthRef.current = playlist.length;
-  }, [playlist]); // This effect still runs whenever the playlist changes
+  }, [playlist]);
 
   const handleExport = (fileType) => {
     exportPlaylistToFile(playlist, fileType);
@@ -26,21 +22,21 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLo
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="bg-white p-4 rounded-lg shadow-lg md:mb-6">
-        <div className="flex justify-between items-center mb-3">
-          <h3 className="text-xl font-bold">Current Setlist</h3>
-          <div className="flex items-center gap-2">
+      <div className="card-brutal p-4 md:mb-6">
+        <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
+          <h3 className="font-display text-xl font-bold text-ink">Current Setlist</h3>
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={onLoadClick}
               disabled={!hasSavedPlaylists}
-              className="px-4 py-2 text-sm font-semibold bg-gray-200 text-gray-700 rounded-lg shadow-sm hover:bg-gray-300 active:scale-95 transition-transform disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+              className="btn-secondary px-4 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-0"
             >
               Load
             </button>
             <button
               onClick={onSave}
               disabled={playlist.length < 1}
-              className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 active:bg-indigo-800 active:scale-95 transition-transform rounded-lg shadow-md hover:bg-indigo-700 disabled:bg-gray-400"
+              className="btn-primary px-4 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-0"
             >
               Save
             </button>
@@ -48,24 +44,33 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLo
               <button
                 onClick={() => setShowExportOptions(!showExportOptions)}
                 disabled={playlist.length === 0}
-                className="px-4 py-2 text-sm font-semibold text-white bg-slate-600 active:bg-slate-800 active:scale-95 transition-transform rounded-lg shadow-md hover:bg-slate-700 disabled:bg-gray-400"
+                className="btn-brutal px-4 py-2 text-sm bg-ink text-surface border-border shadow-brutal hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-0"
               >
                 Export
               </button>
               {showExportOptions && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 text-left">
-                  <button onClick={() => handleExport('txt')} className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export as .txt</button>
-                  <button onClick={() => handleExport('csv')} className="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export as .csv</button>
+                <div className="absolute right-0 mt-2 w-48 card-brutal z-20 text-left overflow-hidden p-1">
+                  <button
+                    onClick={() => handleExport('txt')}
+                    className="w-full text-left block px-4 py-2 text-sm font-sans text-ink hover:bg-gray-100 rounded-brutal transition-colors"
+                  >
+                    Export as .txt
+                  </button>
+                  <button
+                    onClick={() => handleExport('csv')}
+                    className="w-full text-left block px-4 py-2 text-sm font-sans text-ink hover:bg-gray-100 rounded-brutal transition-colors"
+                  >
+                    Export as .csv
+                  </button>
                 </div>
               )}
             </div>
           </div>
         </div>
-        
+
         <Droppable droppableId="playlist">
           {(provided) => (
             <div
-              // FIXED: Use a callback to assign both refs
               ref={(el) => {
                 provided.innerRef(el);
                 listEndRef.current = el;
@@ -75,32 +80,30 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLo
             >
               {playlist.length > 0 ? (
                 playlist.map((song, index) => (
-                  <Draggable 
-                    key={`${song.id}-${index}`} 
-                    draggableId={`${song.id}-${index}`} 
+                  <Draggable
+                    key={`${song.id}-${index}`}
+                    draggableId={`${song.id}-${index}`}
                     index={index}
                     shouldRespectForcePress={true}
                   >
-                    {/* Add the 'snapshot' parameter here */}
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        // Conditionally add animation classes when snapshot.isDragging is true
-                        className={`p-2 bg-gray-100 rounded flex items-center justify-between transition-transform ${
-                          snapshot.isDragging ? 'scale-105 shadow-lg rotate-1' : ''
+                        className={`p-2 rounded-brutal flex items-center justify-between border-2 border-border bg-gray-50 transition-all ${
+                          snapshot.isDragging ? 'shadow-brutal-lg rotate-1 scale-[1.02] bg-surface' : 'shadow-brutal-sm'
                         }`}
                       >
-                        <div className="flex-grow cursor-pointer truncate" onClick={() => onSelect(song)}>
-                          <p className="font-semibold text-sm">
-                            <span className="text-gray-500 mr-2">{index + 1}.</span>
-                            {song.name} - {song.artist}
+                        <div className="flex-grow cursor-pointer truncate font-sans" onClick={() => onSelect(song)}>
+                          <p className="font-semibold text-sm text-ink">
+                            <span className="text-mute mr-2">{index + 1}.</span>
+                            {song.name} – {song.artist}
                           </p>
                         </div>
                         <button
                           onClick={() => onRemove(index)}
-                          className="ml-2 text-red-500 hover:text-red-700 font-bold text-xl flex-shrink-0 active:text-red-800 active:scale-125 transition-transform"
+                          className="ml-2 w-8 h-8 flex items-center justify-center rounded-brutal border-2 border-border bg-surface text-destructive font-display font-bold shadow-brutal-sm hover:bg-red-50 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"
                           aria-label="Remove song"
                         >
                           &times;
@@ -110,7 +113,7 @@ const CurrentPlaylist = ({ playlist, onSave, onRemove, onSelect, onDragEnd, onLo
                   </Draggable>
                 ))
               ) : (
-                <p className="text-sm text-gray-500 p-2">Add songs to build your setlist.</p>
+                <p className="text-sm text-mute font-sans p-2">Add songs to build your setlist.</p>
               )}
               {provided.placeholder}
             </div>

@@ -19,52 +19,79 @@ const LoadPlaylistModal = ({ isOpen, onClose, savedPlaylists, onLoad, onDelete, 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+    <div className="fixed inset-0 z-40 flex justify-center items-center p-4" style={{ backgroundColor: 'rgba(10,10,10,0.6)' }}>
+      <div className="card-brutal w-full max-w-md p-6 max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Saved Playlists</h2>
-          <button onClick={() => setIsManageMode(!isManageMode)} className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300 active:bg-gray-400 transition">
+          <h2 className="font-display text-2xl font-bold text-ink">Saved Playlists</h2>
+          <button
+            onClick={() => setIsManageMode(!isManageMode)}
+            className="btn-secondary px-3 py-1.5 text-sm"
+          >
             {isManageMode ? 'Done' : 'Manage'}
           </button>
         </div>
-        
-        <div className="space-y-3 max-h-96 overflow-y-auto">
+
+        <div className="space-y-3 max-h-96 overflow-y-auto flex-1">
           {savedPlaylists.length > 0 ? (
             savedPlaylists.map((playlist) => (
-              <div key={playlist.id} className="bg-gray-100 p-3 rounded-lg">
+              <div key={playlist.id} className="p-3 rounded-brutal border-2 border-border bg-gray-50 shadow-brutal-sm">
                 {editingId === playlist.id && isManageMode ? (
-                  // Rename View
-                  <div className="flex items-center gap-2">
-                    <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="w-full p-2 border rounded" />
-                    <button onClick={handleRenameSave} className="px-3 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-600 active:bg-green-700 transition">Save</button>
-                    <button onClick={() => setEditingId(null)} className="px-3 py-2 text-sm bg-gray-400 text-white rounded hover:bg-gray-500 active:bg-gray-600 transition">Cancel</button>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <input
+                      type="text"
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                      className="input-brutal flex-1 min-w-0"
+                    />
+                    <button onClick={handleRenameSave} className="btn-primary px-3 py-2 text-sm">
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setEditingId(null)}
+                      className="btn-secondary px-3 py-2 text-sm"
+                    >
+                      Cancel
+                    </button>
                   </div>
                 ) : (
-                  // Default View (changes based on mode)
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center gap-2 flex-wrap">
                     <div>
-                      <p className="font-semibold">{playlist.name}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="font-display font-semibold text-ink">{playlist.name}</p>
+                      <p className="text-xs text-mute font-sans">
                         {playlist.songs.length} tracks • {new Date(playlist.id).toLocaleDateString()}
                       </p>
                     </div>
                     {isManageMode ? (
                       <div className="flex items-center gap-2">
-                        <button onClick={() => handleRenameClick(playlist)} className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600 active:bg-yellow-700 transition">Rename</button>
-                        <button onClick={() => onDelete(playlist.id)} className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 active:bg-red-700 transition">Delete</button>
+                        <button
+                          onClick={() => handleRenameClick(playlist)}
+                          className="btn-brutal px-3 py-1.5 text-sm bg-warning text-ink border-border shadow-brutal-sm hover:bg-amber-400"
+                        >
+                          Rename
+                        </button>
+                        <button
+                          onClick={() => onDelete(playlist.id)}
+                          className="btn-brutal px-3 py-1.5 text-sm bg-destructive text-white border-border shadow-brutal-sm hover:bg-red-600"
+                        >
+                          Delete
+                        </button>
                       </div>
                     ) : (
-                      <button onClick={() => onLoad(playlist.songs)} className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 active:bg-blue-700 transition">Load</button>
+                      <button onClick={() => onLoad(playlist.songs)} className="btn-primary px-3 py-1.5 text-sm">
+                        Load
+                      </button>
                     )}
                   </div>
                 )}
               </div>
             ))
           ) : (
-            <p className="text-gray-500">No saved playlists yet.</p>
+            <p className="text-mute font-sans">No saved playlists yet.</p>
           )}
         </div>
-        <button onClick={onClose} className="w-full mt-4 py-2 text-sm font-semibold text-white bg-slate-600 rounded-lg hover:bg-slate-700 active:bg-slate-800 transition">Close</button>
+        <button onClick={onClose} className="w-full mt-4 btn-brutal py-2 text-sm font-display font-semibold bg-ink text-surface border-border shadow-brutal hover:bg-gray-800">
+          Close
+        </button>
       </div>
     </div>
   );

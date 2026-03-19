@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import FilterControls from './FilterControls';
 
 const MobileFilters = ({ isDesktop, isOpen, onClose, filterParams, onFilterChange, yearRange, filteredGenres, songLengthRange, onClearLibrary, isInstructionsVisible, onSetInstructionsVisible }) => {
-  // NEW: Create a local 'draft' state to hold changes while the modal is open.
   const [draftParams, setDraftParams] = useState(filterParams);
 
-  // NEW: This effect resets the draft to the main settings every time the modal is opened.
   useEffect(() => {
     if (isOpen) {
       setDraftParams(filterParams);
@@ -15,20 +13,26 @@ const MobileFilters = ({ isDesktop, isOpen, onClose, filterParams, onFilterChang
   if (!isOpen) return null;
 
   const handleOkClick = () => {
-    onFilterChange(draftParams); // Apply the draft changes to the main app state
-    onClose(); // Then close the modal
+    onFilterChange(draftParams);
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+    <div className="fixed inset-0 z-40 flex justify-center items-center p-4" style={{ backgroundColor: 'rgba(10,10,10,0.6)' }}>
+      <div className="card-brutal w-full max-w-md p-6 max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Settings</h2>
+          <h2 className="font-display text-2xl font-bold text-ink">Settings</h2>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-brutal border-2 border-border bg-surface font-display font-bold text-ink shadow-brutal-sm hover:bg-gray-100 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"
+            aria-label="Close"
+          >
+            &times;
+          </button>
         </div>
-        
-        <div className="max-h-[60vh] overflow-y-auto pr-2">
-          {/* FilterControls now modifies the 'draftParams' state, not the main app state */}
-          <FilterControls 
+
+        <div className="max-h-[60vh] overflow-y-auto pr-2 flex-1">
+          <FilterControls
             filterParams={draftParams}
             onFilterChange={setDraftParams}
             yearRange={yearRange}
@@ -39,28 +43,25 @@ const MobileFilters = ({ isDesktop, isOpen, onClose, filterParams, onFilterChang
             isDesktop={isDesktop}
           />
         </div>
-        
-        <div className="flex items-center justify-between pr-2 mt-4">
+
+        <div className="flex items-center justify-between pr-2 mt-4 gap-2 flex-wrap">
           <button
             onClick={onClearLibrary}
-            className="py-2 text-sm font-semibold text-red-600 hover:bg-red-100 rounded-lg transition"
+            className="py-2 px-3 text-sm font-display font-semibold text-destructive border-2 border-border rounded-brutal bg-surface shadow-brutal-sm hover:bg-red-50 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"
           >
             Clear Library
           </button>
-          
+
           <div className="flex items-center gap-2">
-            {/* "Cancel" just closes the modal, discarding the draft changes */}
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+              className="btn-secondary px-4 py-2 text-sm"
             >
               Cancel
             </button>
-
-            {/* "OK" now calls our new handler to save the changes */}
             <button
               onClick={handleOkClick}
-              className="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 transition"
+              className="btn-primary px-4 py-2 text-sm"
             >
               OK
             </button>

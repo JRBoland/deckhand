@@ -238,8 +238,8 @@ function App() {
     setDisplaySongs(songsToShow);
   }, [searchTerm, selectedSong, allSongs, filterParams]);
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
-      <div className="container mx-auto max-w-6xl flex-grow">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--color-bg)' }}>
+      <div className="container mx-auto max-w-6xl flex-grow isolate relative">
         <MobileFilters 
           isOpen={isMobileFiltersOpen}
           onClose={() => setIsMobileFiltersOpen(false)}
@@ -273,34 +273,34 @@ function App() {
           <div className="p-0 md:p-8">
             <header className="relative md:text-center mb-4 md:mb-8 px-4 pt-4 md:px-0 md:pt-0">
               <div className="flex items-center justify-between md:justify-center">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-800 [-webkit-tap-highlight-color:transparent]">📀 DECKHAND</h1>
+                <h1 className="font-display text-3xl md:text-4xl font-bold text-ink [-webkit-tap-highlight-color:transparent]">📀 DECKHAND</h1>
                 {/* Grouping the mobile buttons */}
-                <div className="flex items-center md:hidden">
-                  <button onClick={scrollToSearch} className="p-2 rounded-full hover:bg-gray-200 active:bg-gray-300 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex items-center md:hidden gap-1">
+                  <button onClick={scrollToSearch} className="p-2 rounded-brutal border-2 border-border bg-surface shadow-brutal-sm hover:bg-gray-100 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all" aria-label="Focus search">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </button>
-                  <button onClick={() => setIsMobileFiltersOpen(true)} className="p-2 rounded-full hover:bg-gray-200 active:bg-gray-300 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <button onClick={() => setIsMobileFiltersOpen(true)} className="p-2 rounded-brutal border-2 border-border bg-surface shadow-brutal-sm hover:bg-gray-100 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all" aria-label="Open settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 16v-2m8-8h2M4 12H2m15.364 6.364l1.414 1.414M4.222 4.222l1.414 1.414m12.728 0l-1.414 1.414M5.636 18.364l-1.414 1.414" />
                     </svg>
                   </button>
                 </div>
               </div>
-              <p className="text-gray-600 hidden sm:block">Harmonic Mixing & Playlist Builder</p>
+              <p className="text-mute hidden sm:block font-sans">Harmonic Mixing & Playlist Builder</p>
               <div className="hidden md:block absolute top-0 right-0">
                 {!isInstructionsVisible && (
                   <button
                     onClick={() => setIsInstructionsVisible(true)}
-                    className="ml-4 text-xs text-blue-600 hover:underline"
+                    className="ml-4 text-xs font-semibold text-ink hover:underline underline-offset-2"
                   >
                     Show Quick Guide
                   </button>)}
 
                 <button
                   onClick={clearLibrary}
-                  className="text-xs ml-4 text-gray-500 hover:text-red-600"
+                  className="text-xs ml-4 font-medium text-mute hover:text-destructive transition-colors"
                 >
                   Clear Library
                 </button>
@@ -310,7 +310,7 @@ function App() {
             </header>
             {/* MOBILE-ONLY LAYOUT */}
             <div className="md:hidden flex flex-col h-[calc(100vh-100px)]">
-              <div className="flex-shrink-0 bg-white p-4 border-b border-black-300 shadow-lg">
+              <div className="flex-shrink-0 bg-surface p-4 border-t-2 border-b-2 border-border">
                 <Instructions isVisible={isInstructionsVisible} onDismiss={() => setIsInstructionsVisible(false)}/>
                 {selectedSong && (
                   <SelectedSongDisplay
@@ -331,7 +331,7 @@ function App() {
               </div>
               <div className="flex-grow overflow-y-auto p-4">
                 <SearchBar onSearch={setSearchTerm} ref={searchBarRef} isHighlighted={isSearchHighlighted}/>
-                <h2 className="text-xl font-semibold my-4 border-b pb-2">
+                <h2 className="font-display text-xl font-bold my-4 border-b-2 border-border pb-2 text-ink">
                   {selectedSong ? 'Compatible Tracks' : 'Your Library'}
                 </h2>
                 <SongList
@@ -352,10 +352,10 @@ function App() {
             <div className="hidden md:grid md:grid-cols-2 md:gap-8">
               <div className="overflow-visible">
                 
-                <div className="sticky top-0 z-10 bg-[#F9FAFB] pt-4 -mx-4 px-4">
+                <div className="sticky top-0 z-10 pt-4 -mx-4 px-4" style={{ backgroundColor: 'var(--color-bg)' }}>
                   <SearchBar onSearch={setSearchTerm} isHighlighted={isSearchHighlighted}/>
                 </div>
-                <h2 className="text-2xl font-semibold my-4 border-b pb-2">
+                <h2 className="font-display text-2xl font-bold my-4 border-b-2 border-border pb-2 text-ink">
                   {selectedSong ? 'Compatible Tracks' : 'Your Library'}
                 </h2>
                 <SongList
@@ -403,7 +403,7 @@ function App() {
             </div>
         )}
       </div>
-      <footer className="text-center text-xs text-gray-500 py-1 md:mt-4">
+      <footer className="text-center text-xs text-mute py-1 md:mt-4 font-sans">
         <p>
           © 2025 Deckhand
           <span className="mx-2">•</span>
@@ -412,7 +412,7 @@ function App() {
             href="https://jbdev.io" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="font-semibold text-indigo-600 hover:underline"
+            className="font-display font-semibold text-ink hover:underline underline-offset-2"
           >
             jbdev.io
           </a>
