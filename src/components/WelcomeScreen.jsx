@@ -1,5 +1,6 @@
 import React from 'react';
 import FileUpload from './FileUpload';
+import SpotifyPlaylistImport from './SpotifyPlaylistImport';
 import logo from '../assets/madebybondla.png';
 
 const WelcomeScreen = ({ onFileUpload }) => {
@@ -11,18 +12,18 @@ const WelcomeScreen = ({ onFileUpload }) => {
       <p className="text-mute font-sans mt-1">
         Your silent partner in the mix.
       </p>
-      <p className="text-mute mt-2 mb-10 text-sm font-sans">
-        <br />
-        Upload your Rekordbox XML file to get started.
+      <p className="text-mute mt-2 mb-8 text-sm font-sans">
+        Upload a Rekordbox XML export, or paste a public Spotify playlist link.
       </p>
-      <div className="max-w-xl mx-auto">
+      <div className="max-w-xl mx-auto space-y-6">
         <FileUpload onFileUpload={onFileUpload} />
+        <SpotifyPlaylistImport onFileUpload={onFileUpload} />
       </div>
       <div className="max-w-2xl mx-auto card-brutal p-6 mt-8">
         <h2 className="font-display text-2xl font-bold text-ink mb-4">How It Works</h2>
         <div className="text-left space-y-4 text-mute text-sm font-sans">
           <p>
-            <strong className="text-ink">1. Export & Upload:</strong> Export your library from Rekordbox (File → Export Collection in XML Format) and upload it above.
+            <strong className="text-ink">1. Load your library:</strong> Export from Rekordbox (File → Export Collection in XML Format) and upload the XML, or paste a public Spotify playlist URL (BPM/key from Spotify are estimates).
           </p>
           <p>
             <strong className="text-ink">2. Select a Track:</strong> Click on any song in your library to see a list of potential next tracks.

@@ -1,0 +1,16 @@
+[build]
+  command = "npm run build"
+  publish = "build"
+  functions = "netlify/functions"
+
+# Spotify import API (same path the React app uses by default)
+[[redirects]]
+  from = "/api/spotify-playlist"
+  to = "/.netlify/functions/spotify-playlist"
+  status = 200
+
+# SPA fallback (static files are still served first)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

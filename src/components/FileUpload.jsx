@@ -29,18 +29,17 @@ const FileUpload = ({ onFileUpload }) => {
           return;
         }
 
-        const formattedSongs = Array.isArray(tracks)
-          ? tracks.map(track => ({
-              id: track.TrackID,
-              name: track.Name,
-              artist: track.Artist,
-              bpm: parseFloat(track.AverageBpm),
-              key: track.Tonality,
-              year: track.Year || null,
-              genre: track.Genre || 'Unknown',
-              totalTime: track.TotalTime ? parseInt(track.TotalTime, 10) : 0,
-            }))
-          : [];
+        const trackList = Array.isArray(tracks) ? tracks : [tracks];
+        const formattedSongs = trackList.map((track) => ({
+          id: track.TrackID,
+          name: track.Name,
+          artist: track.Artist,
+          bpm: parseFloat(track.AverageBpm),
+          key: track.Tonality,
+          year: track.Year || null,
+          genre: track.Genre || 'Unknown',
+          totalTime: track.TotalTime ? parseInt(track.TotalTime, 10) : 0,
+        }));
 
         onFileUpload(formattedSongs);
       });
