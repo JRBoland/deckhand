@@ -7,16 +7,30 @@ import {
 const ACCESS_TOKEN_KEY = 'deckhand-spotify-access-token';
 const TOKEN_EXPIRES_KEY = 'deckhand-spotify-token-expires';
 
+function rewritePlaylistApiPath(playlistUrl, suffix) {
+  try {
+    const u = new URL(playlistUrl.trim());
+    u.pathname = u.pathname.replace(/spotify-playlist\/?$/, suffix);
+    return u.toString();
+  } catch {
+    return null;
+  }
+}
+
+export function getSpotifyClientIdEndpoint() {
+  const playlistUrl = process.env.REACT_APP_SPOTIFY_IMPORT_URL;
+  if (playlistUrl && playlistUrl.trim()) {
+    const rewritten = rewritePlaylistApiPath(playlistUrl, 'spotify-client-id');
+    if (rewritten) return rewritten;
+  }
+  return '/api/spotify-client-id';
+}
+
 function getExchangeEndpoint() {
   const playlistUrl = process.env.REACT_APP_SPOTIFY_IMPORT_URL;
   if (playlistUrl && playlistUrl.trim()) {
-    try {
-      const u = new URL(playlistUrl.trim());
-      u.pathname = u.pathname.replace(/spotify-playlist\/?$/, 'spotify-exchange');
-      return u.toString();
-    } catch {
-      /* use default */
-    }
+    const rewritten = rewritePlaylistApiPath(playlistUrl, 'spotify-exchange');
+    if (rewritten) return rewritten;
   }
   return '/api/spotify-exchange';
 }

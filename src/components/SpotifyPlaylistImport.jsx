@@ -5,6 +5,7 @@ import {
   getStoredSpotifyAccessToken,
   clearSpotifySession,
   readSpotifyOAuthError,
+  getSpotifyClientIdEndpoint,
 } from '../utils/spotifySession';
 
 const defaultEndpoint = '/api/spotify-playlist';
@@ -17,14 +18,14 @@ function getImportEndpoint() {
   return defaultEndpoint;
 }
 
-const spotifyClientId = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-
 const SpotifyPlaylistImport = ({ onFileUpload }) => {
   const [url, setUrl] = useState('');
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState(null);
   const [loading, setLoading] = useState(false);
   const [signedIn, setSignedIn] = useState(() => !!getStoredSpotifyAccessToken());
+  const [oauthClientId, setOauthClientId] = useState(null);
+  const [clientIdLoading, setClientIdLoading] = useState(true);
 
   const refreshSignedIn = useCallback(() => {
     setSignedIn(!!getStoredSpotifyAccessToken());
@@ -40,15 +41,35 @@ const SpotifyPlaylistImport = ({ onFileUpload }) => {
     return () => window.removeEventListener('deckhand-spotify-auth-done', onAuthDone);
   }, [refreshSignedIn]);
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(getSpotifyClientIdEndpoint());
+        const data = await res.json().catch(() => ({}));
+        if (!cancelled && data.clientId && typeof data.clientId === 'string') {
+          setOauthClientId(data.clientId.trim());
+        }
+      } catch {
+        /* ignore */
+      } finally {
+        if (!cancelled) setClientIdLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const handleSignIn = async () => {
     setError(null);
-    if (!spotifyClientId || !spotifyClientId.trim()) {
+    if (!oauthClientId) {
       setError(
-        'Missing REACT_APP_SPOTIFY_CLIENT_ID. In Netlify add it (same value as your Spotify Client ID) and rebuild the site.'
+        'Could not load Spotify Client ID from the server. Set SPOTIFY_CLIENT_ID in Netlify (or .env for local dev) and ensure /api/spotify-client-id is deployed.'
       );
       return;
     }
-    await startSpotifyLogin(spotifyClientId.trim());
+    await startSpotifyLogin(oauthClientId);
   };
 
   const handleSignOut = () => {
@@ -132,10 +153,10 @@ const SpotifyPlaylistImport = ({ onFileUpload }) => {
           <button
             type="button"
             onClick={handleSignIn}
-            disabled={loading}
-            className="font-display font-semibold px-4 py-2 rounded-brutal border-2 border-border bg-[#1DB954] text-white shadow-brutal-sm hover:brightness-95 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"
+            disabled={loading || clientIdLoading}
+            className="font-display font-semibold px-4 py-2 rounded-brutal border-2 border-border bg-[#1DB954] text-white shadow-brutal-sm hover:brightness-95 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all disabled:opacity-60"
           >
-            Sign in with Spotify
+            {clientIdLoading ? 'Loading…' : 'Sign in with Spotify'}
           </button>
         )}
       </div>

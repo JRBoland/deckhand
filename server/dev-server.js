@@ -9,6 +9,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
 const { handleSpotifyPlaylistRequest } = require('../lib/handleSpotifyPlaylistRequest');
 const { handleSpotifyExchangeRequest } = require('../lib/handleSpotifyExchangeRequest');
+const { handleSpotifyClientIdRequest } = require('../lib/handleSpotifyClientIdRequest');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -20,7 +21,7 @@ const allowed = process.env.ALLOWED_ORIGIN
 app.use(
   cors({
     origin: allowed,
-    methods: ['POST', 'OPTIONS'],
+    methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
   })
 );
@@ -41,6 +42,11 @@ app.post('/api/spotify-playlist', async (req, res) => {
 
 app.post('/api/spotify-exchange', async (req, res) => {
   const result = await handleSpotifyExchangeRequest('POST', JSON.stringify(req.body || {}));
+  sendHandlerResult(res, result);
+});
+
+app.get('/api/spotify-client-id', async (req, res) => {
+  const result = await handleSpotifyClientIdRequest(req.method);
   sendHandlerResult(res, result);
 });
 
