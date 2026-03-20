@@ -35,8 +35,10 @@ app.post('/api/spotify-playlist', async (req, res) => {
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
   try {
-    const songs = await importSpotifyPlaylist(urlOrId, { clientId, clientSecret });
-    res.json({ songs });
+    const { songs, warnings } = await importSpotifyPlaylist(urlOrId, { clientId, clientSecret });
+    const payload = { songs };
+    if (warnings?.length) payload.warnings = warnings;
+    res.json(payload);
   } catch (err) {
     const status = err.status && err.status >= 400 && err.status < 600 ? err.status : 400;
     res.status(status).json({ error: err.message || 'Import failed' });

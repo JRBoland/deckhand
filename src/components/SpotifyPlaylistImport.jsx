@@ -14,11 +14,13 @@ function getImportEndpoint() {
 const SpotifyPlaylistImport = ({ onFileUpload }) => {
   const [url, setUrl] = useState('');
   const [error, setError] = useState(null);
+  const [warning, setWarning] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setWarning(null);
 
     const parsed = parseSpotifyPlaylistId(url);
     if (parsed.error) {
@@ -41,10 +43,19 @@ const SpotifyPlaylistImport = ({ onFileUpload }) => {
             'Spotify import API not found (404). Static hosting only serves the React app — it cannot run /api. Deploy the full project to Vercel (recommended: connect the repo; add SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in Project → Settings → Environment Variables), or host the API elsewhere and set REACT_APP_SPOTIFY_IMPORT_URL to its full URL before running npm run build.'
           );
         }
+        if (res.status === 403) {
+          throw new Error(
+            data.error ||
+              'Spotify returned 403 (forbidden). If the playlist is private, make it public or use a public playlist link. Otherwise check Spotify’s Web API access for your developer app.'
+          );
+        }
         throw new Error(data.error || `Request failed (${res.status})`);
       }
       if (!Array.isArray(data.songs) || data.songs.length === 0) {
         throw new Error('No songs returned from Spotify.');
+      }
+      if (Array.isArray(data.warnings) && data.warnings.length > 0) {
+        setWarning(data.warnings.join(' '));
       }
       onFileUpload(data.songs);
     } catch (err) {
@@ -85,6 +96,12 @@ const SpotifyPlaylistImport = ({ onFileUpload }) => {
           {loading ? 'Loading…' : 'Load from Spotify'}
         </button>
       </form>
+      {warning && (
+        <div className="mt-4 bg-amber-50 border-2 border-border border-l-4 border-l-warning rounded-brutal p-3 shadow-brutal-sm">
+          <p className="font-display font-bold text-ink">Note</p>
+          <p className="text-ink text-sm font-sans">{warning}</p>
+        </div>
+      )}
       {error && (
         <div className="mt-4 bg-red-50 border-2 border-border border-l-4 border-l-destructive rounded-brutal p-3 shadow-brutal-sm">
           <p className="font-display font-bold text-destructive">Error</p>
