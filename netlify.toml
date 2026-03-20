@@ -9,6 +9,11 @@
   to = "/.netlify/functions/spotify-playlist"
   status = 200
 
+[[redirects]]
+  from = "/api/spotify-exchange"
+  to = "/.netlify/functions/spotify-exchange"
+  status = 200
+
 # SPA fallback (static files are still served first)
 [[redirects]]
   from = "/*"

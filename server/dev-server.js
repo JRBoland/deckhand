@@ -7,7 +7,8 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
-const { importSpotifyPlaylist } = require('../lib/spotifyPlaylistImport');
+const { handleSpotifyPlaylistRequest } = require('../lib/handleSpotifyPlaylistRequest');
+const { handleSpotifyExchangeRequest } = require('../lib/handleSpotifyExchangeRequest');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -25,24 +26,22 @@ app.use(
 );
 app.use(express.json());
 
+function sendHandlerResult(res, result) {
+  Object.entries(result.headers).forEach(([k, v]) => res.setHeader(k, v));
+  if (result.statusCode === 204) {
+    return res.status(204).end();
+  }
+  return res.status(result.statusCode).send(result.body);
+}
+
 app.post('/api/spotify-playlist', async (req, res) => {
-  const urlOrId = req.body?.urlOrId ?? req.body?.url ?? req.body?.playlistUrl;
-  if (!urlOrId || typeof urlOrId !== 'string') {
-    return res.status(400).json({ error: 'Missing urlOrId (playlist URL or ID).' });
-  }
+  const result = await handleSpotifyPlaylistRequest('POST', JSON.stringify(req.body || {}));
+  sendHandlerResult(res, result);
+});
 
-  const clientId = process.env.SPOTIFY_CLIENT_ID;
-  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
-
-  try {
-    const { songs, warnings } = await importSpotifyPlaylist(urlOrId, { clientId, clientSecret });
-    const payload = { songs };
-    if (warnings?.length) payload.warnings = warnings;
-    res.json(payload);
-  } catch (err) {
-    const status = err.status && err.status >= 400 && err.status < 600 ? err.status : 400;
-    res.status(status).json({ error: err.message || 'Import failed' });
-  }
+app.post('/api/spotify-exchange', async (req, res) => {
+  const result = await handleSpotifyExchangeRequest('POST', JSON.stringify(req.body || {}));
+  sendHandlerResult(res, result);
 });
 
 app.listen(PORT, () => {

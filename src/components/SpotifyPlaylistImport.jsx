@@ -1,5 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { parseSpotifyPlaylistId } from '../utils/parseSpotifyPlaylistId';
+import { startSpotifyLogin } from '../utils/spotifyPkce';
+import {
+  getStoredSpotifyAccessToken,
+  clearSpotifySession,
+  readSpotifyOAuthError,
+} from '../utils/spotifySession';
 
 const defaultEndpoint = '/api/spotify-playlist';
 
@@ -11,11 +17,44 @@ function getImportEndpoint() {
   return defaultEndpoint;
 }
 
+const spotifyClientId = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
+
 const SpotifyPlaylistImport = ({ onFileUpload }) => {
   const [url, setUrl] = useState('');
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [signedIn, setSignedIn] = useState(() => !!getStoredSpotifyAccessToken());
+
+  const refreshSignedIn = useCallback(() => {
+    setSignedIn(!!getStoredSpotifyAccessToken());
+  }, []);
+
+  useEffect(() => {
+    const onAuthDone = () => {
+      refreshSignedIn();
+      const oauthErr = readSpotifyOAuthError();
+      if (oauthErr) setError(oauthErr);
+    };
+    window.addEventListener('deckhand-spotify-auth-done', onAuthDone);
+    return () => window.removeEventListener('deckhand-spotify-auth-done', onAuthDone);
+  }, [refreshSignedIn]);
+
+  const handleSignIn = async () => {
+    setError(null);
+    if (!spotifyClientId || !spotifyClientId.trim()) {
+      setError(
+        'Missing REACT_APP_SPOTIFY_CLIENT_ID. In Netlify add it (same value as your Spotify Client ID) and rebuild the site.'
+      );
+      return;
+    }
+    await startSpotifyLogin(spotifyClientId.trim());
+  };
+
+  const handleSignOut = () => {
+    clearSpotifySession();
+    refreshSignedIn();
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,25 +67,25 @@ const SpotifyPlaylistImport = ({ onFileUpload }) => {
       return;
     }
 
+    const accessToken = getStoredSpotifyAccessToken();
+    if (!accessToken) {
+      setError('Sign in with Spotify first (required for playlist import with current Spotify API rules).');
+      return;
+    }
+
     setLoading(true);
     try {
       const endpoint = getImportEndpoint();
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ urlOrId: url.trim() }),
+        body: JSON.stringify({ urlOrId: url.trim(), accessToken }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         if (res.status === 404) {
           throw new Error(
             'Spotify import API not found (404). Static hosting only serves the React app — it cannot run /api. Deploy the full project to Vercel (recommended: connect the repo; add SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in Project → Settings → Environment Variables), or host the API elsewhere and set REACT_APP_SPOTIFY_IMPORT_URL to its full URL before running npm run build.'
-          );
-        }
-        if (res.status === 403) {
-          throw new Error(
-            data.error ||
-              'Spotify returned 403 (forbidden). If the playlist is private, make it public or use a public playlist link. Otherwise check Spotify’s Web API access for your developer app.'
           );
         }
         throw new Error(data.error || `Request failed (${res.status})`);
@@ -75,8 +114,31 @@ const SpotifyPlaylistImport = ({ onFileUpload }) => {
         Or load a Spotify playlist
       </h2>
       <p className="text-mute text-sm font-sans mb-3">
-        Paste a public playlist link. BPM and key come from Spotify’s audio features (estimates — not the same as Rekordbox analysis).
+        Sign in with Spotify once, then paste a playlist link. (Spotify no longer allows anonymous playlist reads for most new apps.) BPM/key may still be missing depending on your API access.
       </p>
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        {signedIn ? (
+          <>
+            <span className="text-sm font-sans text-ink font-semibold">Signed in to Spotify</span>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="text-sm font-display font-semibold underline text-mute hover:text-ink"
+            >
+              Sign out
+            </button>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={handleSignIn}
+            disabled={loading}
+            className="font-display font-semibold px-4 py-2 rounded-brutal border-2 border-border bg-[#1DB954] text-white shadow-brutal-sm hover:brightness-95 active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"
+          >
+            Sign in with Spotify
+          </button>
+        )}
+      </div>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 sm:items-stretch">
         <input
           type="text"
@@ -90,7 +152,7 @@ const SpotifyPlaylistImport = ({ onFileUpload }) => {
         />
         <button
           type="submit"
-          disabled={loading || !url.trim()}
+          disabled={loading || !url.trim() || !signedIn}
           className="font-display font-semibold px-4 py-2 rounded-brutal border-2 border-border bg-primary text-primary-ink shadow-brutal-sm hover:bg-[#b8e84a] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:translate-x-0 disabled:active:translate-y-0"
         >
           {loading ? 'Loading…' : 'Load from Spotify'}

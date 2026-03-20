@@ -1,5 +1,9 @@
 // src/App.js
 import { useState, useEffect, useMemo, useRef, useCallback  } from 'react';
+import {
+  finalizeSpotifyOAuthFromUrl,
+  setSpotifyOAuthError,
+} from './utils/spotifySession';
 import { checkCamelotCompatibility } from './utils/camelotWheelHelper';
 import SongList from './components/SongList';
 import FilterControls from './components/FilterControls';
@@ -65,6 +69,33 @@ function App() {
   });
 
   const showInstructions = () => setIsInstructionsVisible(true);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.get('code') || !params.get('state')) return undefined;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await finalizeSpotifyOAuthFromUrl(params);
+        if (cancelled) return;
+        if (result.ok === false && result.error) {
+          setSpotifyOAuthError(result.error);
+        }
+      } catch (e) {
+        if (!cancelled) setSpotifyOAuthError(e.message || 'Spotify sign-in failed.');
+      } finally {
+        if (!cancelled) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+          window.dispatchEvent(new Event('deckhand-spotify-auth-done'));
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('deckhand-currentPlaylist', JSON.stringify(currentPlaylist));
