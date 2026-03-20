@@ -1,6 +1,8 @@
 /** @see https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow */
 
-export const SPOTIFY_OAUTH_SCOPES = 'playlist-read-private playlist-read-collaborative';
+// user-read-private: lets Spotify infer market from the user’s account (avoids some playlist 403s).
+export const SPOTIFY_OAUTH_SCOPES =
+  'playlist-read-private playlist-read-collaborative user-read-private';
 
 const PKCE_VERIFIER_KEY = 'deckhand-spotify-pkce-verifier';
 const OAUTH_STATE_KEY = 'deckhand-spotify-oauth-state';

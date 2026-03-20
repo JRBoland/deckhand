@@ -135,7 +135,7 @@ const SpotifyPlaylistImport = ({ onFileUpload }) => {
         Or load a Spotify playlist
       </h2>
       <p className="text-mute text-sm font-sans mb-3">
-        Sign in with Spotify once, then paste a playlist link. (Spotify no longer allows anonymous playlist reads for most new apps.) BPM/key may still be missing depending on your API access.
+        Sign in with Spotify once, then paste a playlist link. (Spotify no longer allows anonymous playlist reads for most new apps.) If import fails with “Forbidden” after an update, use <strong className="text-ink">Sign out</strong> then sign in again so new permissions apply. BPM/key may still be missing depending on your API access.
       </p>
       <div className="flex flex-wrap items-center gap-2 mb-4">
         {signedIn ? (
